@@ -1,0 +1,178 @@
+\documentclass[11pt,letterpaper]{article}
+
+\usepackage{fontspec}
+\setmainfont{LiberationSans}[Path=/usr/share/fonts/liberation/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold, ItalicFont=*-Italic, BoldItalicFont=*-BoldItalic]
+\usepackage[spanish,es-noshorthands,es-tabla,es-noitemize]{babel}
+\usepackage[letterpaper,top=2cm,bottom=2cm,left=2cm,right=2cm]{geometry}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{positioning,arrows.meta}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{caption}
+\usepackage[hidelinks]{hyperref}
+\usepackage{xurl}
+\urlstyle{same}
+
+\definecolor{cpucol}{HTML}{E4E6EA}
+\definecolor{pciecol}{HTML}{F6D7B0}
+\definecolor{gpucol}{HTML}{C9E8D2}
+
+\titleformat{\section}[block]{\centering\bfseries\fontsize{16}{19}\selectfont}{\thesection.}{0.4em}{}
+\titleformat{\subsection}{\bfseries\fontsize{14}{17}\selectfont}{\thesubsection}{0.6em}{}
+\titlespacing*{\section}{0pt}{8pt}{4pt}
+\titlespacing*{\subsection}{0pt}{6pt}{3pt}
+\setlist{nosep,leftmargin=1.3em,topsep=2pt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\captionsetup{labelsep=period,skip=3pt}
+\setlength{\textfloatsep}{8pt}
+\setlength{\intextsep}{6pt}
+\renewcommand{\arraystretch}{1.15}
+\pagestyle{plain}
+
+\begin{document}
+
+\begin{titlepage}
+  \centering
+  \includegraphics[width=3.4cm]{logo-uvg.png}\par
+  \vspace{0.8cm}
+  Universidad del Valle de Guatemala\par
+  CC3069 Computación Paralela y Distribuida, sección 20\par
+  Ing. Juan Luis García\par
+  \vspace{4.5cm}
+  {\bfseries\fontsize{16}{19}\selectfont Caso 1: Radiografías que no esperan\par}
+  \vspace{0.6cm}
+  Caso práctico: CUDA en el mundo real\par
+  Informe 1: Propuesta\par
+  \vspace{4.5cm}
+  Grupo 1\par
+  \vspace{0.3cm}
+  \begin{tabular}{ll}
+    Diego López     & 23747 \\
+    Nicolás Concuá  & 23197 \\
+    Esteban Cárcamo & 23016 \\
+  \end{tabular}\par
+  \vfill
+  Guatemala, 4 de noviembre de 2026\par
+\end{titlepage}
+
+\setcounter{page}{1}
+
+\section{Problema y usuario}
+
+En las unidades de radiología del Instituto Guatemalteco de Seguridad Social (IGSS) se reciben cientos de radiografías de tórax al día y un solo radiólogo de turno las lee en el orden en que llegan. Así, la placa de un afiliado con un neumotórax puede quedar detrás de decenas de estudios normales. Esto afecta al paciente, que espera sin saber que su caso es urgente, al médico de emergencias, que necesita el informe para decidir el tratamiento, y al radiólogo, que no sabe qué placa abrir primero.
+
+La decisión que depende de esto es el orden de lectura. Un neumotórax o un edema pulmonar necesitan atención en minutos, así que una priorización que tarda horas en calcularse ya no sirve. Se propone asignar a cada radiografía un puntaje de urgencia y reordenar la cola cada vez que entra un estudio. El sistema no diagnostica ni sustituye al radiólogo, que sigue leyendo todo, pero empieza por los casos con más probabilidad de ser graves.
+
+\section{Conjunto de datos}
+
+Se utilizará NIH ChestX-ray14 (Wang et al., 2017), porque son radiografías reales de hospital, sus etiquetas incluyen los hallazgos urgentes del caso y el modelo que se usará fue entrenado con estos datos.
+
+\begin{table}[h]
+\centering
+\caption{Datos del conjunto seleccionado.}
+\begin{tabularx}{\linewidth}{|l|X|}
+\hline
+Fuente & NIH Clinical Center, \url{https://nihcc.app.box.com/v/ChestXray-NIHCC} \\ \hline
+Tamaño total & 112\,120 radiografías de 30\,805 pacientes en 12 archivos comprimidos (unos 42 GB) \\ \hline
+Subconjunto & Archivos images\_001 a images\_005: unas 45\,000 imágenes y 16,5 GB comprimidos, según un espejo público (se confirmará al descargar) \\ \hline
+Formato & PNG de 1024 × 1024 píxeles en escala de grises, con etiquetas de 14 hallazgos en un CSV \\ \hline
+Licencia & Uso sin restricciones; se debe enlazar el sitio del NIH, citar a Wang et al. (2017) y reconocer al NIH Clinical Center como proveedor \\ \hline
+\end{tabularx}
+\end{table}
+
+\section{Plan de paralelización en GPU}
+
+\subsection{Tarea a resolver}
+
+Las versiones de CPU y de GPU harán el mismo trabajo, con los mismos datos, el mismo modelo y la misma precisión (FP32). Cada radiografía se decodifica, se recorta al centro, se reduce a 224 × 224 píxeles, se normaliza y pasa por la red DenseNet-121 de TorchXRayVision (Cohen et al., 2022; Huang et al., 2017), ya entrenada con radiografías de tórax. El puntaje de urgencia es la mayor probabilidad entre cinco hallazgos críticos: neumotórax, edema, neumonía, derrame y consolidación. Se usa el máximo y no la suma porque el radiólogo prioriza según el hallazgo más grave. Al final, la cola se ordena por puntaje.
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}[
+  box/.style={draw=black!55, rounded corners=2pt, align=center, font=\scriptsize,
+              minimum height=1.5cm, text width=1.95cm, inner sep=2pt},
+  arr/.style={-{Stealth[length=4pt]}, thick, black!60},
+  node distance=0.3cm]
+  \node[box, fill=cpucol]               (a) {Leer PNG\\de disco\\\textit{(CPU)}};
+  \node[box, fill=cpucol,  right=of a]  (b) {Decodificar\\PNG\\\textit{(CPU, hilos)}};
+  \node[box, fill=pciecol, right=of b]  (c) {Copia a GPU\\en uint8\\\textit{(PCIe)}};
+  \node[box, fill=gpucol,  right=of c]  (d) {Recorte,\\224 × 224 y\\normalización\\\textit{(kernel CUDA)}};
+  \node[box, fill=gpucol,  right=of d]  (e) {DenseNet-121\\por lotes\\\textit{(cuDNN)}};
+  \node[box, fill=gpucol,  right=of e]  (f) {Puntaje: máx.\\de hallazgos\\críticos\\\textit{(GPU)}};
+  \node[box, fill=gpucol,  right=of f]  (g) {Cola\\ordenada\\\textit{(GPU)}};
+  \foreach \x/\y in {a/b,b/c,c/d,d/e,e/f,f/g} \draw[arr] (\x) -- (\y);
+\end{tikzpicture}
+\caption{Etapas de la versión GPU: en gris, la CPU; en naranja, la transferencia, y en verde, la GPU.}
+\end{figure}
+
+\subsection{Qué se paraleliza}
+
+\begin{itemize}
+  \item Las radiografías son independientes entre sí, así que se procesan en lotes de 32 a 64.
+  \item El preprocesado es píxel por píxel: un kernel propio en CuPy (Okuta et al., 2017) usará un hilo por píxel de salida (50\,176 por imagen) y se comparará con la misma operación en PyTorch (Paszke et al., 2019).
+  \item La inferencia son multiplicaciones de matrices muy grandes que cuDNN reparte entre los núcleos de la GPU.
+  \item El puntaje y el ordenamiento de las 45\,000 placas también se calculan en la GPU.
+\end{itemize}
+
+La lectura del disco y la decodificación de los PNG se quedan en la CPU en ambas versiones, porque descomprimir cada archivo es secuencial. Esa es la fracción serial que se analizará con la Ley de Amdahl.
+
+\subsection{Medición}
+
+Ambas versiones correrán en la misma laptop: Intel Core i9-13980HX (24 núcleos y 32 hilos, todos usados por la versión de CPU), 15 GB de RAM y NVIDIA GeForce RTX 4050 Laptop con 6 GB de VRAM. Se reportarán T\textsubscript{CPU}, T\textsubscript{GPU}, el speedup T\textsubscript{CPU}/T\textsubscript{GPU} y el tiempo de copia a la GPU, medido aparte con eventos de CUDA, como la mediana de cinco ejecuciones tras una de calentamiento. Si la laptop falla, se usará Google Colab y ahí se medirán de nuevo las dos versiones. El código estará en \url{https://github.com/ecarcamo/Second-CUDA-Challenge}.
+
+\section{Hipótesis y riesgos}
+
+Se espera que la inferencia ocupe la mayor parte del tiempo en CPU y que la GPU la acelere al menos diez veces. El speedup total debería ser menor porque la decodificación sigue en la CPU: según la Ley de Amdahl, si esa parte es una fracción \textit{s} del tiempo, el speedup no puede pasar de 1/\textit{s}. Además, enviar cada imagen en uint8 (1 MiB) y no en float32 (4 MiB) debería reducir la copia; se medirán ambas opciones.
+
+\begin{table}[h]
+\centering
+\caption{Riesgos identificados y cómo se mitigan.}
+\begin{tabularx}{\linewidth}{|l|X|}
+\hline
+Riesgo & Mitigación \\ \hline
+6 GB de VRAM & Lotes de 32 a 64 imágenes y medición de la memoria pico \\ \hline
+15 GB de RAM & Las imágenes decodificadas ocupan unos 45 GB: se leen por lotes \\ \hline
+PNG en color o con canal alfa & Conversión a escala de grises en el preprocesado \\ \hline
+Modelo entrenado con datos del NIH & Precisión reportada solo sobre la partición oficial de prueba \\ \hline
+La Mac de Nicolás no tiene CUDA & Solo se usa para desarrollar; las mediciones se hacen en la laptop \\ \hline
+\end{tabularx}
+\end{table}
+
+\section{Distribución del trabajo}
+
+\begin{table}[h]
+\centering
+\caption{Responsable de cada etapa.}
+\begin{tabularx}{\linewidth}{|l|l|X|}
+\hline
+Integrante & Carné & Responsabilidad \\ \hline
+Diego López & 23747 & Descarga, verificación y preparación del subconjunto y sus etiquetas \\ \hline
+Nicolás Concuá & 23197 & Versión de CPU, desarrollada y probada en su Mac \\ \hline
+Esteban Cárcamo & 23016 & Versión de GPU y mediciones finales en la RTX 4050 \\ \hline
+\end{tabularx}
+\end{table}
+
+Cada integrante coordina una etapa, pero los tres son programadores en todas. El análisis, el informe final y la presentación se harán en conjunto.
+
+\clearpage
+\section*{Referencias}
+{\setlength{\parindent}{-1.25em}\setlength{\leftskip}{1.25em}\setlength{\parskip}{3pt}
+
+Cohen, J. P., Viviano, J. D., Bertin, P., Morrison, P., Torabian, P., Guarrera, M., Lungren, M. P., Chaudhari, A., Brooks, R., Hashir, M. y Bertrand, H. (2022). TorchXRayVision: A library of chest X-ray datasets and models. En \textit{Proceedings of the 5th International Conference on Medical Imaging with Deep Learning} (Vol. 172, pp. 231--249). PMLR. \url{https://proceedings.mlr.press/v172/cohen22a.html}
+
+Huang, G., Liu, Z., van der Maaten, L. y Weinberger, K. Q. (2017). Densely connected convolutional networks. En \textit{2017 IEEE Conference on Computer Vision and Pattern Recognition} (pp. 2261--2269). \url{https://doi.org/10.1109/CVPR.2017.243}
+
+Okuta, R., Unno, Y., Nishino, D., Hido, S. y Loomis, C. (2017). CuPy: A NumPy-compatible library for NVIDIA GPU calculations. En \textit{Workshop on Machine Learning Systems (LearningSys), NIPS 2017}.
+
+Paszke, A., Gross, S., Massa, F., Lerer, A., Bradbury, J., Chanan, G., \ldots{} Chintala, S. (2019). PyTorch: An imperative style, high-performance deep learning library. En \textit{Advances in Neural Information Processing Systems 32} (pp. 8024--8035).
+
+
+Wang, X., Peng, Y., Lu, L., Lu, Z., Bagheri, M. y Summers, R. M. (2017). ChestX-ray8: Hospital-scale chest X-ray database and benchmarks on weakly-supervised classification and localization of common thorax diseases. En \textit{2017 IEEE Conference on Computer Vision and Pattern Recognition}. \url{https://doi.org/10.1109/CVPR.2017.369}
+\par}
+
+\end{document}
