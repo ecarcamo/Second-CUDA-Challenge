@@ -49,6 +49,14 @@ Medición final (44 999 imágenes, 1 corrida de calentamiento y la mediana de 5)
 .venv/bin/python -m cpu.ejecutar --salida resultados/cpu
 ```
 
+En el i9-13980HX la mejor configuración fue 8 hilos solo en los núcleos P (ver `resultados/RESUMEN.md`, barrido de hilos), así que la medición final se corrió así:
+
+```bash
+taskset -c 0-15 .venv/bin/python -m cpu.ejecutar --hilos 8 --salida resultados/cpu
+```
+
+Entre corridas se espera a que la laptop se enfríe (`--sin-pausas` lo desactiva). Los pesos desnormalizados se pasan a cero (`comun/model.py`); `--pesos-originales` lo desactiva.
+
 | Parámetro | Default | Qué hace |
 |---|---|---|
 | `--lote` | 64 | Imágenes por lote. Así nunca se carga todo el subconjunto (unos 45 GB decodificados) en la RAM |

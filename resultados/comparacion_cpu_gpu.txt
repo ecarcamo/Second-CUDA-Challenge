@@ -1,0 +1,8 @@
+imagenes: 44999
+dif_max_puntaje: 2.000000000002e-06
+dif_media_puntaje: 8.642414275876313e-08
+dif_max_por_hallazgo: {'neumotorax': 2.000000000002e-06, 'edema': 2.000000000002e-06, 'neumonia': 2.000000000002e-06, 'derrame': 1.0000000000287557e-06, 'consolidacion': 1.0000000000287557e-06}
+misma_posicion: 0.9927331718482633
+dif_max_posicion: 2
+spearman_posiciones: 0.9999999999774798
+coinciden_top_100: 100

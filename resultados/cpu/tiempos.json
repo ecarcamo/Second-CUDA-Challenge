@@ -1,0 +1,123 @@
+{
+  "version": "cpu",
+  "fecha": "2026-11-08T04:09:10",
+  "imagenes": 44999,
+  "lote": 64,
+  "hilos": 8,
+  "hilos_torch": 8,
+  "pesos": "densenet121-res224-all",
+  "precision": "fp32",
+  "pesos_desnormalizados_a_cero": 2564659,
+  "calentamiento": 1,
+  "repeticiones": 5,
+  "equipo": {
+    "cpu": "13th Gen Intel(R) Core(TM) i9-13980HX",
+    "nucleos_logicos": 32,
+    "ram_gb": 15.2,
+    "so": "Linux-7.3.0-4-cachyos-x86_64-with-glibc2.44",
+    "python": "3.11.15"
+  },
+  "librerias": {
+    "torch": "2.15.0+cu132",
+    "torchxrayvision": "1.5.7",
+    "numpy": "2.4.6",
+    "opencv": "5.0.0"
+  },
+  "mediana_s": {
+    "lectura": 19.111341058916878,
+    "decodificacion": 53.47887755398551,
+    "preprocesado": 79.24593618199287,
+    "inferencia": 1293.6559962960928,
+    "puntaje": 0.07111209202048485,
+    "ordenamiento": 0.02112896600010572,
+    "total": 1445.8148348059985
+  },
+  "imagenes_por_s": 31.12362587290649,
+  "fraccion_por_etapa": {
+    "lectura": 0.013218387720777028,
+    "decodificacion": 0.0369887459075362,
+    "preprocesado": 0.05481057067216094,
+    "inferencia": 0.8947591110238382,
+    "puntaje": 4.918478515267605e-05,
+    "ordenamiento": 1.4613881038882018e-05
+  },
+  "pausas_termicas": [
+    {
+      "antes_de": "corrida 1",
+      "espera_s": 120.0,
+      "cpu_c": 81.0,
+      "gpu_c": 47.0
+    },
+    {
+      "antes_de": "corrida 2",
+      "espera_s": 120.0,
+      "cpu_c": 82.0,
+      "gpu_c": 47.0
+    },
+    {
+      "antes_de": "corrida 3",
+      "espera_s": 120.0,
+      "cpu_c": 83.0,
+      "gpu_c": 47.0
+    },
+    {
+      "antes_de": "corrida 4",
+      "espera_s": 120.0,
+      "cpu_c": 81.0,
+      "gpu_c": 47.0
+    },
+    {
+      "antes_de": "corrida 5",
+      "espera_s": 120.0,
+      "cpu_c": 83.0,
+      "gpu_c": 47.0
+    }
+  ],
+  "corridas_s": [
+    {
+      "lectura": 18.650678372017865,
+      "decodificacion": 53.47887755398551,
+      "preprocesado": 80.60974497895586,
+      "inferencia": 1298.9330406240224,
+      "puntaje": 0.07081452195416205,
+      "ordenamiento": 0.021970488000079058,
+      "total": 1451.8060993969993
+    },
+    {
+      "lectura": 19.509724120984174,
+      "decodificacion": 53.04492514500089,
+      "preprocesado": 79.06611762699322,
+      "inferencia": 1296.6937807700015,
+      "puntaje": 0.07225941197248176,
+      "ordenamiento": 0.02288340899758623,
+      "total": 1448.4418128010002
+    },
+    {
+      "lectura": 18.945064333995106,
+      "decodificacion": 53.57664053606641,
+      "preprocesado": 79.51291545791901,
+      "inferencia": 1293.6559962960928,
+      "puntaje": 0.07163856591068907,
+      "ordenamiento": 0.02112896600010572,
+      "total": 1445.8148348059985
+    },
+    {
+      "lectura": 19.445533327016165,
+      "decodificacion": 52.65060967306272,
+      "preprocesado": 78.61998318098995,
+      "inferencia": 1291.1896436279676,
+      "puntaje": 0.07015892804338364,
+      "ordenamiento": 0.01800852900123573,
+      "total": 1442.0109990049968
+    },
+    {
+      "lectura": 19.111341058916878,
+      "decodificacion": 53.62890126405182,
+      "preprocesado": 79.24593618199287,
+      "inferencia": 1292.1270845170147,
+      "puntaje": 0.07111209202048485,
+      "ordenamiento": 0.020346080000308575,
+      "total": 1444.2453135630021
+    }
+  ]
+}

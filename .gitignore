@@ -2,6 +2,7 @@
 datos/archivos_nih/
 datos/extraido/
 datos/salidas/
+datos/nih_meta/
 *.parcial
 
 # planificacion interna, no va al repo

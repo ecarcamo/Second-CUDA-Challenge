@@ -1,0 +1,56 @@
+{
+  "version": "cpu",
+  "fecha": "2026-11-08T01:22:30",
+  "imagenes": 2000,
+  "lote": 64,
+  "hilos": 16,
+  "hilos_torch": 16,
+  "pesos": "densenet121-res224-all",
+  "precision": "fp32",
+  "pesos_desnormalizados_a_cero": 2564659,
+  "calentamiento": 1,
+  "repeticiones": 1,
+  "equipo": {
+    "cpu": "13th Gen Intel(R) Core(TM) i9-13980HX",
+    "nucleos_logicos": 32,
+    "ram_gb": 15.2,
+    "so": "Linux-7.3.0-4-cachyos-x86_64-with-glibc2.44",
+    "python": "3.11.15"
+  },
+  "librerias": {
+    "torch": "2.15.0+cu132",
+    "torchxrayvision": "1.5.7",
+    "numpy": "2.4.6",
+    "opencv": "5.0.0"
+  },
+  "mediana_s": {
+    "lectura": 0.20589353299874347,
+    "decodificacion": 2.0386560969964194,
+    "preprocesado": 4.4065903299924685,
+    "inferencia": 62.03166759601663,
+    "puntaje": 0.003450565993261989,
+    "ordenamiento": 0.0001530009976704605,
+    "total": 68.68703649800227
+  },
+  "imagenes_por_s": 29.11757592072223,
+  "fraccion_por_etapa": {
+    "lectura": 0.0029975602893383205,
+    "decodificacion": 0.029680361840268253,
+    "preprocesado": 0.06415461424253807,
+    "inferencia": 0.9031058953580097,
+    "puntaje": 5.023605863913414e-05,
+    "ordenamiento": 2.2275090828079394e-06
+  },
+  "pausas_termicas": [],
+  "corridas_s": [
+    {
+      "lectura": 0.20589353299874347,
+      "decodificacion": 2.0386560969964194,
+      "preprocesado": 4.4065903299924685,
+      "inferencia": 62.03166759601663,
+      "puntaje": 0.003450565993261989,
+      "ordenamiento": 0.0001530009976704605,
+      "total": 68.68703649800227
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+7724 imagenes de la particion de prueba
+  auc neumotorax    0.630  (758 positivos)
+  auc edema         0.774  (264 positivos)
+  auc neumonia      0.614  (166 positivos)
+  auc derrame       0.761  (1185 positivos)
+  auc consolidacion 0.676  (529 positivos)
+  auc puntaje vs 'algun hallazgo critico': 0.662  (2471 positivos)

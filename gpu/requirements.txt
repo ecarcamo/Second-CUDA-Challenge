@@ -1,0 +1,2 @@
+-r ../cpu/requirements.txt
+cupy-cuda13x==14.2.0

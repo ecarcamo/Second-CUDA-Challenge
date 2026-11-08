@@ -27,6 +27,8 @@ import torchxrayvision as xrv
 
 from comun.tarea import (ETIQUETAS, EXTRAIDO, HALLAZGOS, PESOS, RAIZ, decodificar,
                          indices_hallazgos, leer_bytes, listar_imagenes)
+from comun.model import load_model
+from comun.thermal import cool_down
 from cpu.preprocesado import preprocesar_lote
 
 ETAPAS = ("lectura", "decodificacion", "preprocesado", "inferencia", "puntaje", "ordenamiento")
@@ -47,6 +49,9 @@ def _argumentos(argv):
     p.add_argument("--calentamiento", type=int, default=1, help="corridas sin medir (default: %(default)s)")
     p.add_argument("--limite", type=int, default=None, help="usar solo las primeras N imagenes (pruebas)")
     p.add_argument("--pesos", default=PESOS, help="pesos de torchxrayvision (default: %(default)s)")
+    p.add_argument("--sin-pausas", action="store_true", help="no esperar a que la laptop se enfrie entre corridas")
+    p.add_argument("--pesos-originales", action="store_true",
+                   help="no pasar a cero los pesos desnormalizados (en x86 la inferencia en cpu es mucho mas lenta)")
     return p.parse_args(argv)
 
 
@@ -141,16 +146,18 @@ def main(argv=None) -> int:
     cv2.setNumThreads(1)  # cada hilo del pool decodifica una imagen; sin hilos extra de opencv
 
     rutas = listar_imagenes(args.extraido, args.etiquetas, args.limite)
-    modelo = xrv.models.DenseNet(weights=args.pesos).eval()  # fp32, cpu
+    modelo, flushed = load_model(args.pesos, args.pesos_originales)
     columnas = indices_hallazgos(list(modelo.pathologies))
     print(f"{len(rutas)} imagenes, lote {args.lote}, {args.hilos} hilos, pesos {args.pesos}", file=sys.stderr)
 
-    corridas = []
+    corridas, pauses = [], []
     with ThreadPoolExecutor(args.hilos) as pool:
         for k in range(args.calentamiento):
             t, *_ = corrida(rutas, modelo, columnas, pool, args.lote, _progreso(f"calentamiento {k + 1}"))
             print(f"calentamiento {k + 1}: {t['total']:.1f} s", file=sys.stderr)
         for k in range(args.repeticiones):
+            if not args.sin_pausas and (k or args.calentamiento):
+                pauses.append(cool_down(label=f"corrida {k + 1}"))
             t, probs, puntajes, orden = corrida(rutas, modelo, columnas, pool, args.lote,
                                                _progreso(f"corrida {k + 1}/{args.repeticiones}"))
             corridas.append(t)
@@ -167,6 +174,7 @@ def main(argv=None) -> int:
         "hilos_torch": torch.get_num_threads(),
         "pesos": args.pesos,
         "precision": "fp32",
+        "pesos_desnormalizados_a_cero": flushed,
         "calentamiento": args.calentamiento,
         "repeticiones": args.repeticiones,
         "equipo": {"cpu": _cpu_nombre(), "nucleos_logicos": os.cpu_count(), "ram_gb": _ram_gb(),
@@ -176,6 +184,7 @@ def main(argv=None) -> int:
         "mediana_s": mediana,
         "imagenes_por_s": n / mediana["total"],
         "fraccion_por_etapa": {e: mediana[e] / mediana["total"] for e in ETAPAS},
+        "pausas_termicas": pauses,
         "corridas_s": corridas,
     }
 

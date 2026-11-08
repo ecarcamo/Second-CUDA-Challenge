@@ -1,0 +1,156 @@
+{
+  "version": "gpu",
+  "fecha": "2026-11-08T06:18:00",
+  "imagenes": 44999,
+  "lote": 32,
+  "hilos": 32,
+  "pesos": "densenet121-res224-all",
+  "precision": "fp32 (tf32 apagado)",
+  "pesos_desnormalizados_a_cero": 2564659,
+  "transferencia": "uint8",
+  "preprocesado": "kernel",
+  "memoria_host": "fijada",
+  "modo": "etapas",
+  "calentamiento": 1,
+  "repeticiones": 5,
+  "equipo": {
+    "cpu": "13th Gen Intel(R) Core(TM) i9-13980HX",
+    "nucleos_logicos": 32,
+    "ram_gb": 15.2,
+    "so": "Linux-7.3.0-4-cachyos-x86_64-with-glibc2.44",
+    "python": "3.11.15",
+    "gpu": "NVIDIA GeForce RTX 4050 Laptop GPU",
+    "vram_gb": 5.72,
+    "driver": "615.78.08",
+    "cuda_torch": "13.2",
+    "cudnn": 92600,
+    "cuda_runtime_cupy": 13020
+  },
+  "librerias": {
+    "torch": "2.15.0+cu132",
+    "torchxrayvision": "1.5.7",
+    "cupy": "14.2.0",
+    "numpy": "2.4.6",
+    "opencv": "5.0.0"
+  },
+  "mediana_s": {
+    "lectura": 19.825714819904533,
+    "decodificacion": 29.90055834990926,
+    "copia": 4.153579325497149,
+    "preprocesado": 0.3887974727749826,
+    "inferencia": 115.46078943252571,
+    "puntaje": 0.24656147192418557,
+    "ordenamiento": 0.0002508800029754639,
+    "copia_resultados": 0.00046697598695755004,
+    "total": 170.84687542500615
+  },
+  "imagenes_por_s": 263.3879015232706,
+  "fraccion_por_etapa": {
+    "lectura": 0.11604376591954181,
+    "decodificacion": 0.17501378515426358,
+    "copia": 0.02431170786802231,
+    "preprocesado": 0.002275707248422267,
+    "inferencia": 0.6758144633625895,
+    "puntaje": 0.0014431722635303015,
+    "ordenamiento": 1.4684494659405612e-06,
+    "copia_resultados": 2.733301301506862e-06
+  },
+  "bytes_copiados_a_gpu": 47184871424,
+  "ancho_de_banda_copia_gb_s": 11.36005062774439,
+  "vram_pico_asignada_mib": 1632.3,
+  "vram_pico_reservada_mib": 1820.0,
+  "pausas_termicas": [
+    {
+      "antes_de": "corrida 1",
+      "espera_s": 30.0,
+      "cpu_c": 90.0,
+      "gpu_c": 54.0
+    },
+    {
+      "antes_de": "corrida 2",
+      "espera_s": 30.0,
+      "cpu_c": 91.0,
+      "gpu_c": 54.0
+    },
+    {
+      "antes_de": "corrida 3",
+      "espera_s": 30.0,
+      "cpu_c": 90.0,
+      "gpu_c": 54.0
+    },
+    {
+      "antes_de": "corrida 4",
+      "espera_s": 30.0,
+      "cpu_c": 90.0,
+      "gpu_c": 54.0
+    },
+    {
+      "antes_de": "corrida 5",
+      "espera_s": 30.0,
+      "cpu_c": 89.0,
+      "gpu_c": 54.0
+    }
+  ],
+  "corridas_s": [
+    {
+      "lectura": 20.235629860944755,
+      "decodificacion": 30.39273432696791,
+      "copia": 4.181301314711568,
+      "preprocesado": 0.3883626568876211,
+      "inferencia": 115.46078943252571,
+      "puntaje": 0.24656147192418557,
+      "ordenamiento": 0.006470784187316895,
+      "copia_resultados": 0.0006675199866294861,
+      "total": 171.2445141930002,
+      "bytes_copiados": 47184871424
+    },
+    {
+      "lectura": 19.638188279015594,
+      "decodificacion": 29.691202453963342,
+      "copia": 4.151224545001985,
+      "preprocesado": 0.38962723159417606,
+      "inferencia": 115.53845365715031,
+      "puntaje": 0.24545958404988033,
+      "ordenamiento": 0.0002508800029754639,
+      "copia_resultados": 0.0004202559888362884,
+      "total": 169.99648647600407,
+      "bytes_copiados": 47184871424
+    },
+    {
+      "lectura": 20.399175299979106,
+      "decodificacion": 29.90055834990926,
+      "copia": 4.150812253713603,
+      "preprocesado": 0.3887974727749826,
+      "inferencia": 115.42385233306896,
+      "puntaje": 0.24525353577733044,
+      "ordenamiento": 0.000289792001247406,
+      "copia_resultados": 0.0008047360181808471,
+      "total": 170.84687542500615,
+      "bytes_copiados": 47184871424
+    },
+    {
+      "lectura": 19.825714819904533,
+      "decodificacion": 29.664896918999148,
+      "copia": 4.153579325497149,
+      "preprocesado": 0.38846409643814067,
+      "inferencia": 115.51472726917248,
+      "puntaje": 0.2544549121335149,
+      "ordenamiento": 8.806400001049042e-05,
+      "copia_resultados": 0.00030985599756240843,
+      "total": 170.14069385100447,
+      "bytes_copiados": 47184871424
+    },
+    {
+      "lectura": 19.783119727078883,
+      "decodificacion": 30.831960930066998,
+      "copia": 4.1666415653824735,
+      "preprocesado": 0.38920195180177747,
+      "inferencia": 115.4273192720412,
+      "puntaje": 0.2503735678717492,
+      "ordenamiento": 0.00013100799918174745,
+      "copia_resultados": 0.00046697598695755004,
+      "total": 171.20324450200133,
+      "bytes_copiados": 47184871424
+    }
+  ]
+}

@@ -1,0 +1,77 @@
+{
+  "version": "gpu",
+  "fecha": "2026-11-08T07:03:45",
+  "imagenes": 2000,
+  "lote": 64,
+  "hilos": 32,
+  "pesos": "densenet121-res224-all",
+  "precision": "fp32 (tf32 apagado)",
+  "pesos_desnormalizados_a_cero": 0,
+  "transferencia": "uint8",
+  "preprocesado": "kernel",
+  "memoria_host": "fijada",
+  "modo": "etapas",
+  "calentamiento": 1,
+  "repeticiones": 1,
+  "equipo": {
+    "cpu": "13th Gen Intel(R) Core(TM) i9-13980HX",
+    "nucleos_logicos": 32,
+    "ram_gb": 15.2,
+    "so": "Linux-7.3.0-4-cachyos-x86_64-with-glibc2.44",
+    "python": "3.11.15",
+    "gpu": "NVIDIA GeForce RTX 4050 Laptop GPU",
+    "vram_gb": 5.72,
+    "driver": "615.78.08",
+    "cuda_torch": "13.2",
+    "cudnn": 92600,
+    "cuda_runtime_cupy": 13020
+  },
+  "librerias": {
+    "torch": "2.15.0+cu132",
+    "torchxrayvision": "1.5.7",
+    "cupy": "14.2.0",
+    "numpy": "2.4.6",
+    "opencv": "5.0.0"
+  },
+  "mediana_s": {
+    "lectura": 0.7850031379566644,
+    "decodificacion": 0.7128694320199429,
+    "copia": 0.17161347210407255,
+    "preprocesado": 0.015579743966460226,
+    "inferencia": 5.432810218811035,
+    "puntaje": 0.0036452160179615022,
+    "ordenamiento": 7.366400212049484e-05,
+    "copia_resultados": 5.5135998874902726e-05,
+    "total": 7.127576514998509
+  },
+  "imagenes_por_s": 280.600284794055,
+  "fraccion_por_etapa": {
+    "lectura": 0.11013605203743346,
+    "decodificacion": 0.10001568282288611,
+    "copia": 0.02407739457344969,
+    "preprocesado": 0.0021858402970036,
+    "inferencia": 0.7622240473152144,
+    "puntaje": 0.0005114243263879244,
+    "ordenamiento": 1.0335069987040364e-05,
+    "copia_resultados": 7.735588493351202e-06
+  },
+  "bytes_copiados_a_gpu": 2097152000,
+  "ancho_de_banda_copia_gb_s": 12.22020610787603,
+  "vram_pico_asignada_mib": 2177.4,
+  "vram_pico_reservada_mib": 2530.0,
+  "pausas_termicas": [],
+  "corridas_s": [
+    {
+      "lectura": 0.7850031379566644,
+      "decodificacion": 0.7128694320199429,
+      "copia": 0.17161347210407255,
+      "preprocesado": 0.015579743966460226,
+      "inferencia": 5.432810218811035,
+      "puntaje": 0.0036452160179615022,
+      "ordenamiento": 7.366400212049484e-05,
+      "copia_resultados": 5.5135998874902726e-05,
+      "total": 7.127576514998509,
+      "bytes_copiados": 2097152000
+    }
+  ]
+}
