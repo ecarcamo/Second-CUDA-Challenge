@@ -1,0 +1,42 @@
+{
+  "_ayuda": {
+    "archivos": "nombres exactos (con extension) de images_001 a images_005, tal como salen en la fuente del nih",
+    "urls": "opcional. nombre -> url https directa para bajarlo con --descargar. vacio si se baja a mano",
+    "checksum_algoritmo": "opcional. solo si el nih publica checksums: nombre del algoritmo (ej. el que diga la fuente)",
+    "checksums": "opcional. nombre de archivo -> hash publicado por el nih",
+    "columna_imagen": "nombre exacto de la columna del csv con el nombre de cada imagen",
+    "formato_hallazgos": "'columna_unica' si todos los hallazgos van en una columna separados por un caracter; 'columna_por_hallazgo' si cada hallazgo tiene su columna",
+    "columna_hallazgos": "solo para columna_unica: nombre exacto de esa columna",
+    "separador_hallazgos": "solo para columna_unica: caracter que separa los hallazgos",
+    "valor_positivo": "solo para columna_por_hallazgo: valor que marca positivo",
+    "hallazgos": "etiqueta exacta del csv (o nombre de columna, segun formato) para cada hallazgo critico"
+  },
+  "archivos": [
+    "images_001.tar.gz",
+    "images_002.tar.gz",
+    "images_003.tar.gz",
+    "images_004.tar.gz",
+    "images_005.tar.gz"
+  ],
+  "urls": {
+    "images_001.tar.gz": "https://nihcc.box.com/shared/static/vfk49d74nhbxq3nqjg0900w5nvkorp5c.gz",
+    "images_002.tar.gz": "https://nihcc.box.com/shared/static/i28rlmbvmfjbl8p2n3ril0pptcmcu9d1.gz",
+    "images_003.tar.gz": "https://nihcc.box.com/shared/static/f1t00wrtdk94satdfb9olcolqx20z2jp.gz",
+    "images_004.tar.gz": "https://nihcc.box.com/shared/static/0aowwzs5lhjrceb3qp67ahp0rd1l1etg.gz",
+    "images_005.tar.gz": "https://nihcc.box.com/shared/static/v5e3goj22zr6h8tzualxfsqlqaygfbsn.gz"
+  },
+  "checksum_algoritmo": null,
+  "checksums": {},
+  "columna_imagen": "Image Index",
+  "formato_hallazgos": "columna_unica",
+  "columna_hallazgos": "Finding Labels",
+  "separador_hallazgos": "|",
+  "valor_positivo": "",
+  "hallazgos": {
+    "neumotorax": "Pneumothorax",
+    "edema": "Edema",
+    "neumonia": "Pneumonia",
+    "derrame": "Effusion",
+    "consolidacion": "Consolidation"
+  }
+}

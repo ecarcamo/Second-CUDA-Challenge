@@ -1,0 +1,12 @@
+# datos pesados del nih, nunca al repo
+datos/archivos_nih/
+datos/extraido/
+datos/salidas/
+*.parcial
+
+# planificacion interna, no va al repo
+tareas/
+
+# python
+__pycache__/
+.pytest_cache/
