@@ -10,3 +10,7 @@ tareas/
 # python
 __pycache__/
 .pytest_cache/
+
+# entorno y resultados locales de cada maquina
+.venv/
+resultados/
