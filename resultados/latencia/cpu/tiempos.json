@@ -1,0 +1,92 @@
+{
+  "version": "cpu",
+  "fecha": "2026-11-11T00:19:40",
+  "imagenes": 1000,
+  "lote": 1,
+  "hilos": 8,
+  "hilos_torch": 8,
+  "pesos": "densenet121-res224-all",
+  "precision": "fp32",
+  "pesos_desnormalizados_a_cero": 2564659,
+  "calentamiento": 1,
+  "repeticiones": 5,
+  "equipo": {
+    "cpu": "13th Gen Intel(R) Core(TM) i9-13980HX",
+    "nucleos_logicos": 32,
+    "ram_gb": 15.2,
+    "so": "Linux-7.3.0-4-cachyos-x86_64-with-glibc2.44",
+    "python": "3.11.15"
+  },
+  "librerias": {
+    "torch": "2.15.0+cu132",
+    "torchxrayvision": "1.5.7",
+    "numpy": "2.4.6",
+    "opencv": "5.0.0"
+  },
+  "mediana_s": {
+    "lectura": 0.2784177346911747,
+    "decodificacion": 8.345388001995161,
+    "preprocesado": 9.869190769837587,
+    "inferencia": 26.95903946387989,
+    "puntaje": 0.07089919455756899,
+    "ordenamiento": 6.170998676680028e-05,
+    "total": 45.695834928992554
+  },
+  "imagenes_por_s": 21.883832553971605,
+  "fraccion_por_etapa": {
+    "lectura": 0.006092847086037759,
+    "decodificacion": 0.18262907363358577,
+    "preprocesado": 0.21597571825032788,
+    "inferencia": 0.58996710544346,
+    "puntaje": 0.0015515461019092948,
+    "ordenamiento": 1.350451017312461e-06
+  },
+  "pausas_termicas": [],
+  "corridas_s": [
+    {
+      "lectura": 0.8945474850479513,
+      "decodificacion": 8.220075869190623,
+      "preprocesado": 9.869190769837587,
+      "inferencia": 26.601190330533427,
+      "puntaje": 0.07089919455756899,
+      "ordenamiento": 6.170998676680028e-05,
+      "total": 45.66103263100376
+    },
+    {
+      "lectura": 0.9521702261408791,
+      "decodificacion": 8.211256396898534,
+      "preprocesado": 9.681536791278631,
+      "inferencia": 26.775133691975498,
+      "puntaje": 0.07071966167131905,
+      "ordenamiento": 5.98860060563311e-05,
+      "total": 45.695834928992554
+    },
+    {
+      "lectura": 0.2741246070654597,
+      "decodificacion": 8.390439727998455,
+      "preprocesado": 9.776641827062122,
+      "inferencia": 27.270507470690063,
+      "puntaje": 0.07130798311845865,
+      "ordenamiento": 6.041399319656193e-05,
+      "total": 45.78819443601242
+    },
+    {
+      "lectura": 0.27120106540678535,
+      "decodificacion": 8.345388001995161,
+      "preprocesado": 9.996438029949786,
+      "inferencia": 26.95903946387989,
+      "puntaje": 0.07073739504266996,
+      "ordenamiento": 6.632400618400425e-05,
+      "total": 45.64786922800704
+    },
+    {
+      "lectura": 0.2784177346911747,
+      "decodificacion": 8.361349080107175,
+      "preprocesado": 10.025698014098452,
+      "inferencia": 27.590007107763086,
+      "puntaje": 0.07114776704111136,
+      "ordenamiento": 6.729300366714597e-05,
+      "total": 46.331614114998956
+    }
+  ]
+}

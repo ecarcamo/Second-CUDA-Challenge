@@ -1,0 +1,38 @@
+1000 imagenes, lote 1, 32 hilos, pesos densenet121-res224-all, transferencia uint8, preprocesado kernel, memoria fijada, modo etapas
+libpng warning: iCCP: profile 'ICC Profile': 'GRAY': Gray color space not permitted on RGB PNG
+  [calentamiento 1] 693/1000 imagenes, 69.2 img/s, faltan ~0.1 min
+  [calentamiento 1] 1000/1000 imagenes, 72.1 img/s, faltan ~0.0 min
+calentamiento 1: 13.9 s
+libpng warning: iCCP: profile 'ICC Profile': 'GRAY': Gray color space not permitted on RGB PNG
+  [corrida 1/5] 875/1000 imagenes, 87.4 img/s, faltan ~0.0 min
+  [corrida 1/5] 1000/1000 imagenes, 85.5 img/s, faltan ~0.0 min
+corrida 1: 11.7 s
+libpng warning: iCCP: profile 'ICC Profile': 'GRAY': Gray color space not permitted on RGB PNG
+  [corrida 2/5] 680/1000 imagenes, 67.9 img/s, faltan ~0.1 min
+  [corrida 2/5] 1000/1000 imagenes, 69.4 img/s, faltan ~0.0 min
+corrida 2: 14.4 s
+libpng warning: iCCP: profile 'ICC Profile': 'GRAY': Gray color space not permitted on RGB PNG
+  [corrida 3/5] 682/1000 imagenes, 68.2 img/s, faltan ~0.1 min
+  [corrida 3/5] 1000/1000 imagenes, 70.9 img/s, faltan ~0.0 min
+corrida 3: 14.1 s
+libpng warning: iCCP: profile 'ICC Profile': 'GRAY': Gray color space not permitted on RGB PNG
+  [corrida 4/5] 751/1000 imagenes, 75.1 img/s, faltan ~0.1 min
+  [corrida 4/5] 1000/1000 imagenes, 75.4 img/s, faltan ~0.0 min
+corrida 4: 13.3 s
+libpng warning: iCCP: profile 'ICC Profile': 'GRAY': Gray color space not permitted on RGB PNG
+  [corrida 5/5] 763/1000 imagenes, 76.2 img/s, faltan ~0.1 min
+  [corrida 5/5] 1000/1000 imagenes, 76.0 img/s, faltan ~0.0 min
+corrida 5: 13.2 s
+
+mediana de 5 corridas (1000 imagenes):
+  lectura               0.309 s    2.3 %
+  decodificacion        7.143 s   53.8 %
+  copia                 0.136 s    1.0 %
+  preprocesado          0.122 s    0.9 %
+  inferencia            5.336 s   40.2 %
+  puntaje               0.095 s    0.7 %
+  ordenamiento          0.000 s    0.0 %
+  copia_resultados      0.000 s    0.0 %
+  total                13.267 s  100.0 %
+  75.4 imagenes/s, copia 7.7 GB/s, vram pico 1208.0 MiB
+resultados en resultados/latencia/gpu

@@ -1,0 +1,54 @@
+1000 imagenes, lote 1, 8 hilos, pesos densenet121-res224-all
+libpng warning: iCCP: profile 'ICC Profile': 'GRAY': Gray color space not permitted on RGB PNG
+  [calentamiento 1] 226/1000 imagenes, 22.5 img/s, faltan ~0.6 min
+  [calentamiento 1] 448/1000 imagenes, 22.4 img/s, faltan ~0.4 min
+  [calentamiento 1] 669/1000 imagenes, 22.2 img/s, faltan ~0.2 min
+  [calentamiento 1] 894/1000 imagenes, 22.3 img/s, faltan ~0.1 min
+  [calentamiento 1] 1000/1000 imagenes, 22.2 img/s, faltan ~0.0 min
+calentamiento 1: 45.0 s
+libpng warning: iCCP: profile 'ICC Profile': 'GRAY': Gray color space not permitted on RGB PNG
+  [corrida 1/5] 219/1000 imagenes, 21.9 img/s, faltan ~0.6 min
+  [corrida 1/5] 436/1000 imagenes, 21.8 img/s, faltan ~0.4 min
+  [corrida 1/5] 661/1000 imagenes, 22.0 img/s, faltan ~0.3 min
+  [corrida 1/5] 883/1000 imagenes, 22.0 img/s, faltan ~0.1 min
+  [corrida 1/5] 1000/1000 imagenes, 21.9 img/s, faltan ~0.0 min
+corrida 1: 45.7 s
+libpng warning: iCCP: profile 'ICC Profile': 'GRAY': Gray color space not permitted on RGB PNG
+  [corrida 2/5] 218/1000 imagenes, 21.7 img/s, faltan ~0.6 min
+  [corrida 2/5] 436/1000 imagenes, 21.7 img/s, faltan ~0.4 min
+  [corrida 2/5] 653/1000 imagenes, 21.7 img/s, faltan ~0.3 min
+  [corrida 2/5] 875/1000 imagenes, 21.8 img/s, faltan ~0.1 min
+  [corrida 2/5] 1000/1000 imagenes, 21.9 img/s, faltan ~0.0 min
+corrida 2: 45.7 s
+libpng warning: iCCP: profile 'ICC Profile': 'GRAY': Gray color space not permitted on RGB PNG
+  [corrida 3/5] 228/1000 imagenes, 22.7 img/s, faltan ~0.6 min
+  [corrida 3/5] 457/1000 imagenes, 22.8 img/s, faltan ~0.4 min
+  [corrida 3/5] 657/1000 imagenes, 21.8 img/s, faltan ~0.3 min
+  [corrida 3/5] 878/1000 imagenes, 21.9 img/s, faltan ~0.1 min
+  [corrida 3/5] 1000/1000 imagenes, 21.8 img/s, faltan ~0.0 min
+corrida 3: 45.8 s
+libpng warning: iCCP: profile 'ICC Profile': 'GRAY': Gray color space not permitted on RGB PNG
+  [corrida 4/5] 216/1000 imagenes, 21.6 img/s, faltan ~0.6 min
+  [corrida 4/5] 441/1000 imagenes, 22.0 img/s, faltan ~0.4 min
+  [corrida 4/5] 657/1000 imagenes, 21.9 img/s, faltan ~0.3 min
+  [corrida 4/5] 877/1000 imagenes, 21.9 img/s, faltan ~0.1 min
+  [corrida 4/5] 1000/1000 imagenes, 21.9 img/s, faltan ~0.0 min
+corrida 4: 45.6 s
+libpng warning: iCCP: profile 'ICC Profile': 'GRAY': Gray color space not permitted on RGB PNG
+  [corrida 5/5] 219/1000 imagenes, 21.9 img/s, faltan ~0.6 min
+  [corrida 5/5] 417/1000 imagenes, 20.8 img/s, faltan ~0.5 min
+  [corrida 5/5] 637/1000 imagenes, 21.2 img/s, faltan ~0.3 min
+  [corrida 5/5] 861/1000 imagenes, 21.5 img/s, faltan ~0.1 min
+  [corrida 5/5] 1000/1000 imagenes, 21.6 img/s, faltan ~0.0 min
+corrida 5: 46.3 s
+
+mediana de 5 corridas (1000 imagenes):
+  lectura             0.278 s    0.6 %
+  decodificacion      8.345 s   18.3 %
+  preprocesado        9.869 s   21.6 %
+  inferencia         26.959 s   59.0 %
+  puntaje             0.071 s    0.2 %
+  ordenamiento        0.000 s    0.0 %
+  total              45.696 s  100.0 %
+  21.9 imagenes/s
+resultados en resultados/latencia/cpu

@@ -56,7 +56,7 @@ El trabajo crece lineal con las imágenes y se procesa por lotes, así que la RA
 |---|---|---|
 | 300 radiografías | 9,6 s | 1,2 s |
 | 1000 radiografías | 32,1 s | 3,9 s |
-| Una radiografía nueva | 32 ms | 3,9 ms |
+| Una radiografía nueva (lote 1, medido) | 45,7 ms | 13,3 ms |
 
 ## Barrido de hilos en la CPU (2 000 imágenes, 1 corrida)
 

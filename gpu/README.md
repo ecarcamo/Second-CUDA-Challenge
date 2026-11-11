@@ -12,7 +12,7 @@ leer png (disco, CPU) -> decodificar (OpenCV, CPU, hilos) -> copia a la GPU en u
 - **Kernel propio (`gpu/preprocess.py`):** un hilo por pixel de salida (224 × 224 por imagen, una imagen por bloque en el eje z). Cada hilo suma su caja de pixeles de entrada (`intervalos_area`), divide entre el tamaño de la caja y aplica `x · 2048/255 − 1024`. Hace las mismas operaciones que `cpu/preprocesado.py`; la diferencia con la CPU es menor a 0,001.
 - **Referencia en PyTorch:** `--preprocesado torch` hace la misma operación con `F.adaptive_avg_pool2d`, para comparar.
 - **FP32 de verdad:** PyTorch usa TF32 en las convoluciones por defecto. Aquí se apaga (`fp32_precision = "ieee"`) para que la GPU calcule con la misma precisión que la CPU.
-- **Pesos desnormalizados:** `comun/model.py` pasa a cero los valores de los pesos menores que 1,18e-38 (unos 2,56 millones de los 6,97 millones). La salida del modelo no cambia, pero en x86 la CPU es unas 4 veces más rápida. Se hace en las dos versiones; `--pesos-originales` lo desactiva.
+- **Pesos desnormalizados:** `comun/model.py` pasa a cero los valores de los pesos menores que 1,18e-38 (unos 2,56 millones de los 6,97 millones). La salida del modelo no cambia, pero en x86 la CPU es unas 2 veces más rápida. Se hace en las dos versiones; `--pesos-originales` lo desactiva.
 - **Medición:** la lectura y la decodificación se miden con el reloj de la CPU; la copia, el preprocesado, la inferencia, el puntaje, el ordenamiento y la copia de resultados, con eventos de CUDA. Se reportan los bytes copiados, el ancho de banda de la copia y la VRAM pico.
 
 ## Cómo correrlo

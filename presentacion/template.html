@@ -1,0 +1,622 @@
+<title>Radiografías que no esperan</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800&family=Hanken+Grotesk:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root {
+  color-scheme: dark;
+  --film: #0a1722;
+  --film-2: #122433;
+  --film-3: #1c3345;
+  --glow: #e3eff3;
+  --ink: #eaf3f6;
+  --muted: #93abb9;
+  --wax: #ff6a45;
+  --cpu: #8fa3bc;
+  --pcie: #f2a650;
+  --gpu: #5fd0a0;
+  --display: "Big Shoulders Display", "Arial Narrow", Impact, sans-serif;
+  --body: "Hanken Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --mono: "IBM Plex Mono", "DejaVu Sans Mono", monospace;
+}
+html, body { height: 100%; margin: 0; }
+[hidden] { display: none !important; }
+body {
+  background: var(--film);
+  color: var(--ink);
+  font-family: var(--body);
+  overflow: hidden;
+  padding-block: 0;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+#viewport { position: relative; width: 100%; height: 100%; overflow: hidden; }
+#stage { position: absolute; width: 1600px; height: 900px; transform-origin: 0 0; background: radial-gradient(1200px 700px at 50% 42%, var(--film-2), var(--film)); overflow: hidden; }
+.scene { position: absolute; inset: 0; padding: 84px 80px 70px; visibility: hidden; opacity: 0; transition: opacity .3s; display: flex; flex-direction: column; justify-content: center; gap: 22px; }
+.scene.on { visibility: visible; opacity: 1; }
+[data-step] { transition: opacity .35s; }
+[data-step].off { opacity: 0; pointer-events: none; }
+h1, h2 { font-family: var(--display); font-weight: 800; margin: 0; text-transform: uppercase; letter-spacing: .01em; line-height: .98; text-wrap: balance; }
+h1 { font-size: 84px; }
+h2 { font-size: 60px; }
+p { margin: 0; }
+.lead { font-size: 32px; line-height: 1.28; font-weight: 500; }
+.note { font-family: var(--mono); font-size: 20px; color: var(--muted); line-height: 1.4; }
+.mono { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.wax { color: var(--wax); }
+.chrome { position: absolute; font-family: var(--mono); font-size: 17px; color: var(--muted); line-height: 1.35; z-index: 20; }
+#tl { top: 22px; left: 28px; }
+#bl { bottom: 22px; left: 28px; }
+#tr { top: 18px; right: 28px; display: flex; align-items: center; gap: 18px; }
+#br { bottom: 16px; right: 24px; display: flex; gap: 8px; align-items: center; }
+#marker { font-family: var(--display); font-weight: 800; font-size: 30px; color: var(--film); background: var(--glow); padding: 2px 12px 3px; border-radius: 3px; letter-spacing: .05em; }
+#clock { font-size: 34px; color: var(--ink); font-variant-numeric: tabular-nums; }
+#clock.low { color: var(--wax); }
+#window { font-size: 17px; }
+button { font-family: var(--mono); font-size: 18px; color: var(--ink); background: var(--film-3); border: 1px solid #36546a; border-radius: 4px; padding: 7px 14px; cursor: pointer; }
+button:hover { background: #29465c; }
+button:focus-visible, input:focus-visible { outline: 3px solid var(--glow); outline-offset: 2px; }
+#notes { position: absolute; left: 0; right: 0; bottom: 0; background: #06101af2; border-top: 2px solid var(--glow); padding: 22px 80px 66px; font-size: 27px; line-height: 1.32; z-index: 15; }
+.wall { position: relative; flex: none; }
+.tile { position: absolute; left: 0; top: 0; background-repeat: no-repeat; filter: brightness(.8); transition-property: transform, filter; transition-timing-function: cubic-bezier(.6,.05,.2,1); will-change: transform; }
+.wall.dim .tile { filter: brightness(.34); }
+.wall.dim .tile.hero { filter: brightness(1.25); z-index: 3; }
+.wall.crit .tile.c { box-shadow: inset 0 0 0 2px var(--wax); filter: brightness(.95); }
+.ring { position: absolute; left: 0; top: 0; border: 4px solid var(--wax); border-radius: 50%; z-index: 4; transition-property: transform, opacity; transition-timing-function: cubic-bezier(.6,.05,.2,1); }
+.ring b { position: absolute; left: 100%; top: -18px; margin-left: 2px; font-family: var(--display); font-size: 34px; color: var(--film); background: var(--wax); padding: 0 8px; border-radius: 3px; }
+.flow { display: flex; gap: 10px; }
+.flow div { flex: 1; min-width: 0; padding: 12px 10px; font-size: 21px; line-height: 1.15; background: var(--film-3); border-top: 5px solid var(--cpu); border-radius: 3px; font-weight: 500; }
+.flow small { display: block; font-family: var(--mono); font-size: 15px; color: var(--muted); margin-top: 5px; }
+.flow .p { border-color: var(--pcie); }
+.flow .g { border-color: var(--gpu); }
+.lane { display: grid; grid-template-columns: 110px 1fr 300px; align-items: center; gap: 14px; }
+.lane > b { font-family: var(--display); font-size: 42px; }
+.track { position: relative; height: 64px; background: #0d1d2a; }
+.seg { position: absolute; top: 0; bottom: 0; }
+.cover { position: absolute; top: 0; bottom: 0; right: 0; background: #0d1d2a; }
+.lane .read { font-family: var(--mono); font-size: 21px; line-height: 1.25; }
+.big { font-family: var(--display); font-weight: 800; font-size: 118px; line-height: .9; }
+.row { display: flex; gap: 44px; align-items: stretch; }
+.grow { flex: 1; min-width: 0; }
+.stat b { display: block; font-family: var(--display); font-weight: 800; font-size: 66px; line-height: 1; }
+.stat span { font-size: 23px; color: var(--muted); line-height: 1.2; display: block; margin-top: 4px; }
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
+.zoombar { display: flex; height: 44px; gap: 2px; }
+.zoombar div { height: 100%; }
+.legend { display: flex; gap: 26px; font-size: 21px; color: var(--muted); }
+.legend i { display: inline-block; width: 16px; height: 16px; border-radius: 2px; margin-right: 7px; vertical-align: -1px; }
+#film { background: #000; cursor: crosshair; touch-action: none; }
+#zoom { display: grid; gap: 2px; align-content: center; justify-content: center; width: 372px; height: 372px; }
+#zoom div { display: flex; align-items: center; justify-content: center; font-family: var(--mono); font-size: 15px; }
+.calc { font-family: var(--mono); font-size: 25px; line-height: 1.5; }
+.calc em { font-style: normal; color: var(--muted); }
+input[type=range] { width: 100%; accent-color: var(--wax); height: 30px; }
+.presets { display: flex; gap: 10px; flex-wrap: wrap; }
+.presets button { font-size: 19px; }
+.presets button.sel { background: var(--glow); color: var(--film); }
+.can { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; font-size: 27px; line-height: 1.24; font-weight: 500; }
+.can div { border-top: 3px solid var(--glow); padding-top: 10px; }
+.refs { font-size: 19px; line-height: 1.33; columns: 2; column-gap: 44px; }
+.refs p { margin: 0 0 9px; break-inside: avoid; }
+svg text { font-family: var(--mono); fill: var(--muted); }
+svg .ink { fill: var(--ink); }
+body.print { overflow: visible; height: auto; padding: 0; background: var(--film); }
+body.print #viewport { height: auto; overflow: visible; }
+body.print #stage { position: relative; height: auto; transform: none !important; left: 0 !important; top: 0 !important; background: var(--film); overflow: visible; }
+body.print .chrome, body.print #notes { display: none !important; }
+body.print .scene { position: relative; inset: auto; width: 1600px; height: 899px; visibility: visible; opacity: 1; break-after: page; break-inside: avoid; box-sizing: border-box; overflow: hidden; background: radial-gradient(1200px 700px at 50% 42%, var(--film-2), var(--film)); }
+body.print .scene:last-of-type { break-after: auto; }
+@page { size: 1600px 900px; margin: 0; }
+@media (prefers-reduced-motion: reduce) { .tile, .ring, .scene, [data-step] { transition: none !important; } }
+</style>
+
+<div id="viewport">
+<main id="stage">
+  <div class="chrome" id="tl">NIH ChestX-ray14 · partición de prueba<br>CC3069 · Grupo 1 · Caso 1</div>
+  <div class="chrome" id="tr"><span id="window"></span><span id="clock" class="mono">05:00</span><span id="marker">DL</span></div>
+  <div class="chrome" id="bl"></div>
+  <div class="chrome" id="br">
+    <button id="bNotes" type="button" title="Guion (tecla N)">Guion</button>
+    <button id="bFull" type="button" title="Pantalla completa (tecla F)">Pantalla</button>
+    <button id="bClock" type="button" title="Iniciar o pausar el reloj (tecla T)">Reloj</button>
+    <button id="bPrev" type="button" aria-label="Anterior">←</button>
+    <button id="bNext" type="button" aria-label="Siguiente">→</button>
+  </div>
+
+  <section class="scene" id="s1">
+    <h1>300 placas. Un radiólogo. <span class="wax">Por orden de llegada.</span></h1>
+    <div class="row" style="gap:36px">
+      <div class="wall" id="wall1"></div>
+      <div class="grow" data-step="1" style="display:flex;flex-direction:column;gap:16px;justify-content:center">
+        <div class="big wax" id="s1pos"></div>
+        <p class="lead" id="s1who"></p>
+        <p class="lead" id="s1wait"></p>
+      </div>
+    </div>
+    <p class="note" data-step="1">Personaje ficticio. Placa real de NIH ChestX-ray14. Orden de llegada simulado; 3 minutos por placa es un supuesto.</p>
+  </section>
+
+  <section class="scene" id="s2" style="justify-content:center;gap:40px">
+    <div>
+      <div class="big">895 987</div>
+      <p class="lead">estudios de rayos X en el IGSS en 2024: unos 2 455 al día. Solo Escuintla registra 5 981 al mes.</p>
+      <p class="note" style="margin-top:6px">IGSS, Boletín estadístico de prestaciones en salud 2024, p. 56. Cifra de Escuintla: dato preliminar, 2026.</p>
+    </div>
+    <div data-step="1" style="display:flex;flex-direction:column;gap:22px">
+      <h2>Los datos: NIH ChestX-ray14, públicos y reales</h2>
+      <div class="stats" style="grid-template-columns:repeat(4,1fr)">
+        <div class="stat"><b>44 999</b><span>radiografías; el mínimo era 20 000</span></div>
+        <div class="stat"><b>17,7 GB</b><span>en PNG de 1024 × 1024</span></div>
+        <div class="stat"><b>11 558</b><span>pacientes</span></div>
+        <div class="stat"><b>421</b><span>PNG con alfa convertidos a gris; 0 ilegibles</span></div>
+      </div>
+      <p class="note">nihcc.app.box.com/v/ChestXray-NIHCC · Wang et al. (2017) · Uso sin restricciones con cita al NIH Clinical Center</p>
+    </div>
+  </section>
+
+  <section class="scene" id="s3">
+    <h2>La misma tarea, dos veces</h2>
+    <div class="flow">
+      <div>Leer PNG<small>CPU</small></div>
+      <div>Decodificar<small>CPU, hilos</small></div>
+      <div class="p">Copiar en uint8<small>PCIe</small></div>
+      <div class="g">Recortar y reducir<small>kernel propio</small></div>
+      <div class="g">DenseNet-121<small>cuDNN, FP32</small></div>
+      <div class="g">Puntaje<small>máx. de 5 hallazgos</small></div>
+      <div class="g">Ordenar cola<small>GPU</small></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px;margin-top:6px">
+      <div class="lane"><b>CPU</b><div class="track" id="trackCpu"></div><div class="read" id="readCpu"></div></div>
+      <div class="lane"><b>GPU</b><div class="track" id="trackGpu"></div><div class="read" id="readGpu"></div></div>
+      <div class="legend"><span><i style="background:var(--cpu)"></i>Lectura y decodificación</span><span><i style="background:var(--pcie)"></i>Copia a la GPU</span><span><i style="background:#b9ecd4"></i>Preprocesado</span><span><i style="background:var(--gpu)"></i>Inferencia</span></div>
+    </div>
+    <div data-step="2" class="row" style="align-items:center;gap:60px">
+      <div class="big" id="s3speed" style="color:var(--gpu)"></div>
+      <div class="grow" style="display:flex;flex-direction:column;gap:8px">
+        <p class="lead" id="s3copy"></p>
+        <div class="zoombar" id="zoomGpu"></div>
+        <p class="note">La barra de arriba es solo la GPU, a su propia escala: 173,3 s.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="scene" id="s4">
+    <h2>Un hilo calcula un píxel</h2>
+    <div class="row" style="gap:36px;align-items:center">
+      <canvas id="film" width="540" height="540" style="width:540px;height:540px"></canvas>
+      <div id="zoom"></div>
+      <div class="grow" style="display:flex;flex-direction:column;gap:20px">
+        <div class="calc" id="calc"></div>
+        <div data-step="1" style="display:flex;flex-direction:column;gap:12px">
+          <div class="stat"><b style="color:var(--gpu)">219×</b><span>79,2 s en CPU, 0,36 s con el kernel</span></div>
+          <div class="stat"><b style="color:var(--pcie)">3,9×</b><span>menos copia: uint8 3,96 s, float32 15,33 s</span></div>
+        </div>
+      </div>
+    </div>
+    <p class="note">50 176 hilos por placa · bloques de 16 × 16 · 3,2 millones de hilos por lote de 64 · pase el cursor sobre la placa</p>
+  </section>
+
+  <section class="scene" id="s5">
+    <h2>¿Por qué no 200 veces más rápido?</h2>
+    <div class="row" style="gap:44px">
+      <div style="width:800px;flex:none">
+        <svg id="amdahl" viewBox="0 0 800 500" width="800" height="500" role="img" aria-label="Curva de la Ley de Amdahl con techo de 19,9 veces"></svg>
+        <label for="kRange" class="note">Aceleración de la parte paralela</label>
+        <input id="kRange" type="range" min="0" max="1000" value="444">
+      </div>
+      <div class="grow" style="display:flex;flex-direction:column;gap:18px">
+        <div><div class="big" id="kOut"></div><p class="lead" id="kText"></p></div>
+        <div data-step="1" style="display:flex;flex-direction:column;gap:14px">
+          <p class="lead">El cuello de botella se movió</p>
+          <div id="shares"></div>
+          <p class="note" style="font-size:20px">Predicción 7,1× · Medido con los mismos hilos 7,3×<br>Medido, CPU libre para decodificar 8,3× · Solapado 10,3×</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="scene" id="s6">
+    <h2>Se ordena la cola</h2>
+    <div class="row" style="gap:34px">
+      <div class="wall" id="wall2"></div>
+      <div class="grow" style="display:flex;flex-direction:column;gap:12px">
+        <div data-step="1"><div class="big wax" id="s6pos" style="font-size:96px"></div><p class="lead" id="s6gain"></p></div>
+        <div data-step="2"><svg id="dumbbell" viewBox="0 0 470 290" width="470" height="290" role="img" aria-label="Posición media por hallazgo"></svg></div>
+      </div>
+    </div>
+    <p class="lead" data-step="2">Prioriza, no diagnostica. El radiólogo sigue leyendo todo. <span class="note">AUC de 0,61 a 0,77 · 5 000 colas simuladas</span></p>
+  </section>
+
+  <section class="scene" id="s7">
+    <h2 id="s7head"></h2>
+    <div class="presets" id="presets"></div>
+    <svg id="ruler" viewBox="0 0 1440 250" width="1440" height="250" role="img" aria-label="Regla de tiempo en escala logarítmica"></svg>
+    <div><label for="nRange" class="note" id="nLabel"></label><input id="nRange" type="range" min="0" max="1000" value="200"></div>
+    <div class="can" data-step="2">
+      <div>Volver a puntuar todo el archivo cada vez que mejore el modelo</div>
+      <div>Recuperar en minutos un atraso tras una caída del sistema</div>
+      <div>Usar modelos unas 8 veces más costosos en el mismo tiempo</div>
+    </div>
+  </section>
+
+  <section class="scene" id="s8" style="flex-direction:row;align-items:center;gap:60px">
+    <div class="grow" style="display:flex;flex-direction:column;gap:26px">
+      <h1 style="font-size:112px">La misma placa. <span class="wax" id="s8gain"></span></h1>
+      <div class="stats">
+        <div class="stat"><b id="s8move"></b><span>posición en la cola</span></div>
+        <div class="stat"><b style="color:var(--gpu)">8,3×</b><span>24,1 min a 2,9 min</span></div>
+        <div class="stat"><b style="color:var(--pcie)">2,3 %</b><span>se fue en copiar</span></div>
+      </div>
+      <p class="note" style="font-size:22px">github.com/ecarcamo/Second-CUDA-Challenge<br>Diego López · Nicolás Concuá · Esteban Cárcamo</p>
+    </div>
+    <img id="s8img" alt="Radiografía real de tórax con edema, NIH ChestX-ray14" width="600" height="600" style="width:600px;height:600px;flex:none;box-shadow:0 0 90px #cfe6ee55">
+  </section>
+
+  <section class="scene" id="s9">
+    <h2>Fuentes y reproducibilidad</h2>
+    <div class="refs">
+      <p>Wang et al. (2017). ChestX-ray8. CVPR, pp. 3462–3471. Datos: NIH Clinical Center, nihcc.app.box.com/v/ChestXray-NIHCC.</p>
+      <p>Cohen et al. (2022). TorchXRayVision. PMLR 172, 231–249.</p>
+      <p>Huang et al. (2017). DenseNet. CVPR, 2261–2269.</p>
+      <p>Paszke et al. (2019). PyTorch. NeurIPS 32, 8024–8035.</p>
+      <p>Okuta et al. (2017). CuPy. LearningSys, NIPS.</p>
+      <p>Harris et al. (2020). NumPy. Nature 585, 357–362.</p>
+      <p>Bradski (2000). OpenCV. Dr. Dobb's Journal.</p>
+      <p>IGSS (2025). Boletín estadístico: prestaciones en salud 2024, p. 56.</p>
+      <p>IGSS (2026). Hospital del IGSS en Escuintla, nota del 8 de abril.</p>
+      <p>Annarumma et al. (2019). Radiology 291(1), 196–202.</p>
+      <p>Cosentini et al. (2009). Intensive Care Medicine 35(2), 299–305.</p>
+      <p>Fuentes tipográficas: Big Shoulders Display, Hanken Grotesk e IBM Plex Mono, Google Fonts.</p>
+    </div>
+    <p class="lead">Equipo: Intel i9-13980HX y NVIDIA RTX 4050 Laptop de 6 GB. Mediana de 5 corridas tras 1 de calentamiento.</p>
+    <p class="lead">Código, datos y pasos para repetirlo: github.com/ecarcamo/Second-CUDA-Challenge.</p>
+  </section>
+
+  <aside id="notes" hidden></aside>
+</main>
+</div>
+
+<script>
+const DATA = __DATA__;
+const $ = id => document.getElementById(id);
+const N = 44999;
+const cpuT = DATA.timings.cpu.median;
+const gpuT = DATA.timings.gpu.median;
+const hero = DATA.hero;
+const READ_MIN = 3;
+const num = (x, d = 0) => x.toLocaleString('es-GT', { minimumFractionDigits: d, maximumFractionDigits: d, useGrouping: false }).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))(?=[^,]*(,|$))/g, ' ');
+const hm = min => `${Math.floor(min / 60)} h ${String(Math.round(min % 60)).padStart(2, '0')} min`;
+const dur = s => s < 60 ? `${num(s, 1)} s` : s < 3600 ? `${num(s / 60, 1)} min` : `${num(s / 3600, 1)} h`;
+const waitArrival = (hero.arrival - 1) * READ_MIN;
+const waitRank = (hero.rank - 1) * READ_MIN;
+const heroName = hero.sex === 'F' ? 'Doña Marta' : 'Don Julio';
+const svgNS = 'http://www.w3.org/2000/svg';
+const el = (tag, attrs, text) => { const e = document.createElementNS(svgNS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (text !== undefined) e.textContent = text; return e; };
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function makeWall(root, tile) {
+  const cols = DATA.columns, rows = Math.ceil(DATA.items.length / cols);
+  root.style.width = cols * tile + 'px';
+  root.style.height = rows * tile + 'px';
+  const tiles = DATA.items.map((it, i) => {
+    const d = document.createElement('div');
+    d.className = 'tile' + (it.c ? ' c' : '') + (i === DATA.heroIndex ? ' hero' : '');
+    d.style.width = d.style.height = tile + 'px';
+    d.style.backgroundImage = `url(${DATA.sprite})`;
+    d.style.backgroundSize = `${cols * tile}px ${rows * tile}px`;
+    d.style.backgroundPosition = `-${(i % cols) * tile}px -${Math.floor(i / cols) * tile}px`;
+    root.append(d);
+    return d;
+  });
+  const ring = document.createElement('div');
+  ring.className = 'ring';
+  const size = tile + 22;
+  ring.style.width = ring.style.height = size + 'px';
+  ring.innerHTML = '<b></b>';
+  root.append(ring);
+  const xy = p => [((p - 1) % cols) * tile, Math.floor((p - 1) / cols) * tile];
+  return {
+    place(key, animate, showRing) {
+      DATA.items.forEach((it, i) => {
+        const [x, y] = xy(it[key]);
+        tiles[i].style.transitionDuration = animate ? '1200ms' : '0ms';
+        tiles[i].style.transitionDelay = animate ? `${(i * 37 % 300) * 2}ms` : '0ms';
+        tiles[i].style.transform = `translate(${x}px,${y}px)`;
+      });
+      const p = DATA.items[DATA.heroIndex][key];
+      const [x, y] = xy(p);
+      const delay = animate ? (DATA.heroIndex * 37 % 300) * 2 : 0;
+      ring.style.transitionDuration = animate ? '1200ms' : '0ms';
+      ring.style.transitionDelay = delay + 'ms';
+      ring.style.transform = `translate(${x - 11}px,${y - 11}px)`;
+      ring.style.opacity = showRing ? 1 : 0;
+      ring.firstChild.textContent = p;
+    },
+    mode(dim, crit) { root.classList.toggle('dim', dim); root.classList.toggle('crit', crit); }
+  };
+}
+
+const wall1 = makeWall($('wall1'), 42);
+const wall2 = makeWall($('wall2'), 38);
+$('s1pos').textContent = `Posición ${hero.arrival}`;
+$('s1who').textContent = `${heroName}, ${hero.age} años. Edema pulmonar.`;
+$('s1wait').textContent = `A ${READ_MIN} min por placa, su radiografía se abre en ${hm(waitArrival)}.`;
+$('s6pos').textContent = `${hero.arrival} → ${hero.rank}`;
+$('s6gain').textContent = `${heroName} se lee ${hm(waitArrival - waitRank)} antes.`;
+$('s8gain').textContent = `${Math.round((waitArrival - waitRank) / 60)} horas antes.`;
+$('s8move').textContent = `${hero.arrival} → ${hero.rank}`;
+$('s8img').src = hero.image;
+
+const cpuParts = [[cpuT.lectura + cpuT.decodificacion, 'var(--cpu)'], [0, 'var(--pcie)'], [cpuT.preprocesado, '#b9ecd4'], [cpuT.inferencia + cpuT.puntaje + cpuT.ordenamiento, 'var(--gpu)']];
+const gpuParts = [[gpuT.lectura + gpuT.decodificacion, 'var(--cpu)'], [gpuT.copia, 'var(--pcie)'], [gpuT.preprocesado, '#b9ecd4'], [gpuT.inferencia + gpuT.puntaje + gpuT.ordenamiento, 'var(--gpu)']];
+const scalePx = 1000 / cpuT.total;
+function fillTrack(track, parts) {
+  let left = 0;
+  parts.forEach(([s, c]) => { const d = document.createElement('div'); d.className = 'seg'; d.style.left = left + 'px'; d.style.width = Math.max(s * scalePx, 0) + 'px'; d.style.background = c; track.append(d); left += s * scalePx; });
+  const cover = document.createElement('div'); cover.className = 'cover'; track.append(cover); return cover;
+}
+const coverCpu = fillTrack($('trackCpu'), cpuParts);
+const coverGpu = fillTrack($('trackGpu'), gpuParts);
+let raceFrame = null;
+function raceAt(sim) {
+  [[coverCpu, cpuT.total, 'readCpu'], [coverGpu, gpuT.total, 'readGpu']].forEach(([cover, total, out]) => {
+    const f = Math.min(sim / total, 1);
+    const end = total * scalePx;
+    cover.style.left = f * end + 'px';
+    const t = Math.min(sim, total);
+    $(out).innerHTML = `${num(Math.floor(f * N))} placas<br>${f >= 1 ? '<span style="color:var(--ink)">' + num(total, 1) + ' s</span>' : num(t, 0) + ' s'}`;
+  });
+}
+function race(run) {
+  clearInterval(raceFrame);
+  if (!run) { raceAt(0); return; }
+  if (reduced) { raceAt(cpuT.total); return; }
+  const start = performance.now();
+  raceFrame = setInterval(() => { const sim = (performance.now() - start) / 1000 * 72; raceAt(sim); if (sim >= cpuT.total) clearInterval(raceFrame); }, 33);
+}
+$('s3speed').textContent = `${num(cpuT.total / gpuT.total, 1)}×`;
+$('s3copy').textContent = `CPU ${num(cpuT.total / 60, 1)} min, GPU ${num(gpuT.total / 60, 1)} min. Copiar a la GPU: ${num(gpuT.copia, 2)} s, el ${num(100 * gpuT.copia / gpuT.total, 1)} %.`;
+gpuParts.forEach(([s, c]) => { const d = document.createElement('div'); d.style.flex = `${Math.max(s, .8)} 0 0`; d.style.background = c; $('zoomGpu').append(d); });
+
+const film = $('film'), fctx = film.getContext('2d');
+const source = new Image();
+let pixels = null, sweepTimer = null, sweepIndex = 0;
+const sweep = [[62, 96], [78, 120], [92, 142], [150, 100], [165, 128], [140, 150], [112, 80], [74, 160], [170, 90], [120, 175]];
+for (let i = 0; i < 196; i++) { const d = document.createElement('div'); d.hidden = true; $('zoom').append(d); }
+function drawThread(x, y) {
+  if (!pixels) return;
+  const r0 = Math.floor(y * 1024 / 224), r1 = Math.ceil((y + 1) * 1024 / 224);
+  const c0 = Math.floor(x * 1024 / 224), c1 = Math.ceil((x + 1) * 1024 / 224);
+  fctx.drawImage(source, 0, 0, 540, 540);
+  const k = 540 / 1024;
+  fctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--wax');
+  fctx.lineWidth = 3;
+  const cx = (c0 + c1) / 2 * k, cy = (r0 + r1) / 2 * k;
+  fctx.strokeRect(cx - 11, cy - 11, 22, 22);
+  const h = r1 - r0, w = c1 - c0, cell = 60;
+  const zoom = $('zoom');
+  zoom.style.gridTemplateColumns = `repeat(${w}, ${cell}px)`;
+  zoom.style.gridAutoRows = cell + 'px';
+  let sum = 0, i = 0;
+  for (let r = r0; r < r1; r++) for (let c = c0; c < c1; c++) {
+    const v = pixels[(r * 1024 + c) * 4];
+    sum += v;
+    const d = zoom.children[i++];
+    d.hidden = false;
+    d.textContent = v;
+    d.style.background = `rgb(${v},${v},${v})`;
+    d.style.color = v > 120 ? '#0a1722' : '#eaf3f6';
+  }
+  for (; i < zoom.children.length; i++) zoom.children[i].hidden = true;
+  const mean = sum / (h * w);
+  const out = mean * 2048 / 255 - 1024;
+  $('calc').innerHTML = `<em>hilo</em> (${x}, ${y})<br><em>bloque</em> (${x >> 4}, ${y >> 4})<br><em>caja</em> ${w} × ${h} = ${w * h} píxeles<br><em>suma</em> ${num(sum)}<br><em>media</em> ${num(mean, 2)}<br><em>salida</em> <span class="wax">${num(out, 1)}</span>`;
+}
+function sweepOn(on) {
+  clearInterval(sweepTimer);
+  if (on && !reduced) sweepTimer = setInterval(() => { sweepIndex = (sweepIndex + 1) % sweep.length; drawThread(...sweep[sweepIndex]); }, 1400);
+}
+source.onload = () => {
+  const c = document.createElement('canvas'); c.width = c.height = 1024;
+  const g = c.getContext('2d', { willReadFrequently: true }); g.drawImage(source, 0, 0);
+  pixels = g.getImageData(0, 0, 1024, 1024).data;
+  drawThread(...sweep[0]);
+};
+source.src = hero.image;
+film.addEventListener('pointermove', e => {
+  sweepOn(false);
+  const b = film.getBoundingClientRect();
+  const x = Math.min(223, Math.max(0, Math.floor((e.clientX - b.left) / b.width * 224)));
+  const y = Math.min(223, Math.max(0, Math.floor((e.clientY - b.top) / b.height * 224)));
+  drawThread(x, y);
+});
+film.addEventListener('pointerleave', () => sweepOn(cur === 3));
+
+const serial = (cpuT.lectura + cpuT.decodificacion) / cpuT.total;
+const A = { l: 66, r: 30, t: 24, b: 58, w: 800, h: 500, maxK: 200, maxS: 22 };
+const ax = k => A.l + Math.log10(k) / Math.log10(A.maxK) * (A.w - A.l - A.r);
+const ay = s => A.h - A.b - s / A.maxS * (A.h - A.t - A.b);
+const amdahl = k => 1 / (serial + (1 - serial) / k);
+const kFrom = v => Math.pow(A.maxK, v / 1000);
+const svgA = $('amdahl');
+[0, 5, 10, 15, 20].forEach(s => { svgA.append(el('line', { x1: A.l, x2: A.w - A.r, y1: ay(s), y2: ay(s), stroke: '#27424f', 'stroke-width': 1 })); svgA.append(el('text', { x: A.l - 12, y: ay(s) + 6, 'text-anchor': 'end', 'font-size': 18 }, s + '×')); });
+[1, 2, 5, 10, 20, 50, 100, 200].forEach(k => svgA.append(el('text', { x: ax(k), y: A.h - A.b + 28, 'text-anchor': 'middle', 'font-size': 18 }, k + '×')));
+svgA.append(el('text', { x: (A.l + A.w - A.r) / 2, y: A.h - 6, 'text-anchor': 'middle', 'font-size': 18 }, 'Aceleración de la parte paralela (escala log)'));
+const ceil = 1 / serial;
+svgA.append(el('line', { x1: A.l, x2: A.w - A.r, y1: ay(ceil), y2: ay(ceil), stroke: 'var(--wax)', 'stroke-width': 2, 'stroke-dasharray': '7 6' }));
+svgA.append(el('text', { x: A.l + 10, y: ay(ceil) - 10, 'font-size': 22, class: 'ink' }, `Techo 1/s = ${num(ceil, 1)}×`));
+let path = '';
+for (let v = 0; v <= 1000; v += 8) { const k = kFrom(v); path += `${v ? 'L' : 'M'}${ax(k).toFixed(1)} ${ay(amdahl(k)).toFixed(1)}`; }
+svgA.append(el('path', { d: path, fill: 'none', stroke: 'var(--gpu)', 'stroke-width': 3, 'stroke-linecap': 'round' }));
+const kInf = cpuT.inferencia / gpuT.inferencia;
+const sameThreads = cpuT.total / DATA.timings.same_threads.median.total;
+svgA.append(el('circle', { cx: ax(kInf), cy: ay(sameThreads), r: 8, fill: 'var(--film)', stroke: 'var(--glow)', 'stroke-width': 3 }));
+svgA.append(el('text', { x: ax(kInf) + 16, y: ay(sameThreads) + 30, 'font-size': 20, class: 'ink' }, `Medido: ${num(sameThreads, 1)}×`));
+const guide = el('line', { y1: A.t, y2: A.h - A.b, stroke: 'var(--muted)', 'stroke-width': 1, 'stroke-dasharray': '3 4' });
+const dot = el('circle', { r: 10, fill: 'var(--wax)', stroke: 'var(--film)', 'stroke-width': 3 });
+svgA.append(guide, dot);
+function setK(v) {
+  const k = kFrom(v), s = amdahl(k);
+  guide.setAttribute('x1', ax(k)); guide.setAttribute('x2', ax(k));
+  dot.setAttribute('cx', ax(k)); dot.setAttribute('cy', ay(s));
+  $('kOut').textContent = `${num(s, 1)}×`;
+  $('kText').textContent = `de speedup total si el resto fuera ${num(k, k < 20 ? 1 : 0)}× más rápido. El ${num(100 * serial, 1)} % sigue en la CPU.`;
+}
+const kInit = Math.round(Math.log(kInf) / Math.log(A.maxK) * 1000);
+$('kRange').value = kInit;
+$('kRange').addEventListener('input', e => setK(+e.target.value));
+svgA.addEventListener('pointermove', e => {
+  const b = svgA.getBoundingClientRect();
+  const px = (e.clientX - b.left) / b.width * A.w;
+  const v = Math.min(1000, Math.max(0, (px - A.l) / (A.w - A.l - A.r) * 1000));
+  $('kRange').value = v; setK(v);
+});
+setK(kInit);
+[['CPU', cpuParts, cpuT.total], ['GPU', gpuParts, gpuT.total]].forEach(([name, parts, total]) => {
+  const row = document.createElement('div');
+  row.style.cssText = 'display:grid;grid-template-columns:70px 1fr;align-items:center;gap:10px;margin-bottom:8px';
+  const bar = parts.map(([s, c]) => `<div style="flex:${s} 0 0;background:${c}"></div>`).join('');
+  const share = 100 * parts[0][0] / total;
+  row.innerHTML = `<b style="font-family:var(--display);font-size:32px">${name}</b><div><div class="zoombar" style="height:34px">${bar}</div><span class="note">Lectura y decodificación: ${num(share, 1)} %</span></div>`;
+  $('shares').append(row);
+});
+
+const names = { edema: 'Edema', consolidacion: 'Consolidación', derrame: 'Derrame', cualquier_critico: 'Cualquier crítico', neumonia: 'Neumonía', neumotorax: 'Neumotórax' };
+const svgD = $('dumbbell');
+const arrivalMean = DATA.impact.posicion_media_por_llegada;
+const rowsD = Object.entries(DATA.impact.puntaje_maximo).map(([k, v]) => [names[k], v.posicion_media]).sort((a, b) => a[1] - b[1]);
+const dx = p => 170 + (p - 80) / (155 - 80) * 280;
+svgD.append(el('line', { x1: dx(arrivalMean), x2: dx(arrivalMean), y1: 24, y2: 280, stroke: 'var(--muted)', 'stroke-width': 1.5, 'stroke-dasharray': '5 5' }));
+svgD.append(el('text', { x: dx(arrivalMean), y: 16, 'text-anchor': 'end', 'font-size': 17 }, `Por llegada: ${num(arrivalMean, 1)}`));
+rowsD.forEach(([name, p], i) => {
+  const y = 48 + i * 42;
+  svgD.append(el('text', { x: 0, y: y + 6, 'font-size': 19, class: 'ink' }, name));
+  svgD.append(el('line', { x1: dx(p), x2: dx(arrivalMean), y1: y, y2: y, stroke: '#3a5a6e', 'stroke-width': 3 }));
+  svgD.append(el('circle', { cx: dx(p), cy: y, r: 9, fill: name === 'Edema' ? 'var(--wax)' : 'var(--gpu)' }));
+  svgD.append(el('text', { x: dx(p), y: y - 14, 'text-anchor': 'middle', 'font-size': 17, class: 'ink' }, num(p, 0)));
+});
+
+const perCpu = cpuT.total / N, perGpu = gpuT.total / N;
+const presets = [['Escuintla, un día', 197], ['IGSS, un día', 2455], ['NIH completo', 112120], ['IGSS, un año', 895987]];
+const R = { l: 30, r: 40, w: 1440, y: 130, min: -1, max: Math.log10(86400) };
+const rx = s => R.l + (Math.log10(Math.max(s, .1)) - R.min) / (R.max - R.min) * (R.w - R.l - R.r);
+const svgR = $('ruler');
+svgR.append(el('line', { x1: R.l, x2: R.w - R.r, y1: R.y, y2: R.y, stroke: 'var(--glow)', 'stroke-width': 3 }));
+const marks = [[1, '1 s'], [60, '1 min'], [300, 'un café'], [3600, 'una hora'], [28800, 'un turno']];
+marks.forEach(([s]) => svgR.append(el('line', { x1: rx(s), x2: rx(s), y1: R.y - 12, y2: R.y + 12, stroke: 'var(--glow)', 'stroke-width': 2 })));
+const pin = (color, up) => { const g = el('g', {}); const line = el('line', { y1: R.y, y2: R.y + (up ? -56 : 62), stroke: color, 'stroke-width': 3 }); const c = el('circle', { cy: R.y, r: 11, fill: color, stroke: 'var(--film)', 'stroke-width': 3 }); const t = el('text', { y: R.y + (up ? -66 : 90), 'text-anchor': 'middle', 'font-size': 32, class: 'ink' }); g.append(line, c, t); svgR.append(g); return { line, c, t }; };
+const pinCpu = pin('var(--cpu)', true), pinGpu = pin('var(--gpu)', false);
+marks.forEach(([s, t]) => svgR.append(el('text', { x: rx(s), y: R.y + 38, 'text-anchor': 'middle', 'font-size': 21, 'paint-order': 'stroke', stroke: 'var(--film-2)', 'stroke-width': 8 }, t)));
+const nFrom = v => Math.round(Math.pow(10, 2 + v / 1000 * 4));
+const vFrom = n => (Math.log10(n) - 2) / 4 * 1000;
+function movePin(p, s, label) { const x = rx(s); p.line.setAttribute('x1', x); p.line.setAttribute('x2', x); p.c.setAttribute('cx', x); const tx = Math.min(Math.max(x, 150), R.w - 170); p.t.setAttribute('x', tx); p.t.textContent = label; }
+function setN(n) {
+  const c = n * perCpu, g = n * perGpu;
+  movePin(pinCpu, c, `CPU ${dur(c)}`);
+  movePin(pinGpu, g, `GPU ${dur(g)}`);
+  $('nLabel').textContent = `${num(n)} placas`;
+  $('s7head').textContent = c < 120 ? 'Para un hospital, la CPU alcanza' : c < 3600 ? 'Minutos contra segundos' : c > 21600 ? 'Un turno contra una hora' : 'Horas contra minutos';
+  document.querySelectorAll('#presets button').forEach(b => b.classList.toggle('sel', +b.dataset.n === n));
+}
+presets.forEach(([t, n]) => { const b = document.createElement('button'); b.type = 'button'; b.dataset.n = n; b.textContent = `${t} · ${num(n)}`; b.addEventListener('click', () => { $('nRange').value = vFrom(n); setN(n); }); $('presets').append(b); });
+$('nRange').addEventListener('input', e => setN(nFrom(+e.target.value)));
+function preset(n) { $('nRange').value = vFrom(n); setN(n); }
+
+const scenes = [
+  { id: 's1', who: 'DL', from: '0:00', to: '0:35', steps: 2, apply(s) { wall1.place('a', false, s >= 1); wall1.mode(s >= 1, false); },
+    notes: `Son las once de la noche en una emergencia del IGSS. En esta pantalla hay 300 radiografías reales y un solo radiólogo, que las abre por orden de llegada. [→] Esta es ${heroName}, ${hero.age} años, con edema pulmonar: se le está llenando de líquido el pulmón. Su placa está en la posición ${hero.arrival}. Si el radiólogo tarda tres minutos por placa, la abre dentro de ${hm(waitArrival)}. Nadie en esa sala sabe que la suya es urgente.` },
+  { id: 's2', who: 'DL', from: '0:35', to: '1:05', steps: 2, apply() {},
+    notes: 'Esto no es un caso raro. El IGSS hizo 895 987 estudios de rayos X en 2024, unos 2 455 al día. [→] Para resolverlo usamos datos reales: 44 999 radiografías del NIH, 17,7 gigas, de más de 11 mil pacientes. Verificamos cada imagen: ninguna ilegible, y 421 venían con canal alfa y se convirtieron a gris sin perder nada.' },
+  { id: 's3', who: 'NC', from: '1:05', to: '1:45', steps: 3, apply(s, animate) { if (s === 0) race(false); else if (s === 1 && animate) race(true); else { clearInterval(raceFrame); raceAt(cpuT.total); } },
+    notes: 'Cada placa sigue el mismo camino: se lee, se decodifica, se reduce a 224 por 224 y una red DenseNet-121 le da un puntaje de urgencia. Hicimos exactamente lo mismo dos veces, con el mismo modelo, los mismos datos y la misma precisión. [→ corre la carrera] Aquí van, con el tiempo comprimido. La CPU, en su mejor configuración, tarda 24 minutos. La GPU, 2 minutos 53 segundos. [→] 8,3 veces más rápido. Y copiar los datos a la GPU tomó apenas 3,96 segundos, el 2,3 por ciento.' },
+  { id: 's4', who: 'EC', from: '1:45', to: '2:25', steps: 2, apply() { sweepOn(true); if (pixels) drawThread(...sweep[sweepIndex]); },
+    notes: 'Esto corre en vivo sobre la placa real. Cada hilo de nuestro kernel calcula un solo píxel de salida: promedia su cajita de 5 por 5 o 6 por 6 píxeles y la normaliza. Son 50 176 hilos por placa, más de 3 millones por lote. [→] El preprocesado pasó de 79 segundos a 0,36. Y como enviamos un byte por píxel en vez de cuatro, la copia bajó de 15 a 4 segundos.' },
+  { id: 's5', who: 'EC', from: '2:25', to: '3:05', steps: 2, apply() {},
+    notes: '¿Por qué no es 200 veces más rápido? Por la Ley de Amdahl. Leer y decodificar se queda en la CPU: es el 5 por ciento. [mover el control a la derecha] Aunque la GPU hiciera lo demás en tiempo cero, el techo es 19,9. Con la inferencia a 10,5 veces, Amdahl predice 7,1, y con los mismos hilos medimos 7,3. [→] El cuello de botella se movió: esa parte pasó de 5 a 27 por ciento. Solapando decodificación y GPU llegamos a 10,3.' },
+  { id: 's6', who: 'NC', from: '3:05', to: '3:45', steps: 3, apply(s, animate) { wall2.place(s >= 1 ? 'r' : 'a', animate && s === 1, true); wall2.mode(s < 2, s >= 2); },
+    notes: `Ahora el momento importante. [→ se ordena la cola] ${heroName} pasa de la ${hero.arrival} a la ${hero.rank}: unas siete horas antes. [→] Pero seamos honestos. En 5 000 colas simuladas, el edema mejora bastante: la posición media baja de 150 a 89. El neumotórax casi no se mueve: 144. Por eso el sistema prioriza y no diagnostica. El radiólogo sigue leyendo todas las placas.` },
+  { id: 's7', who: 'DL', from: '3:45', to: '4:30', steps: 3, apply(s) { preset(s === 0 ? 197 : 895987); },
+    notes: '¿Y la GPU para qué, si un hospital ordena su día en 6 segundos con CPU? Para un solo hospital, no hace falta. [→] Cambia cuando crece la escala. Un año de rayos X de todo el IGSS: 8 horas en CPU, un turno entero; menos de una hora en GPU. [→] Ahora se puede volver a puntuar todo el archivo cada vez que mejore el modelo, recuperar un atraso en minutos y usar modelos ocho veces más pesados en el mismo tiempo, que es justo lo que necesita la precisión.' },
+  { id: 's8', who: 'EC', from: '4:30', to: '5:00', steps: 1, apply() {},
+    notes: `Diego: La placa de ${heroName} es la misma. Nicolás: La abrieron siete horas antes. Esteban: Y hacerlo para 45 mil placas cuesta 2,9 minutos en una GPU de laptop. El código y los datos están en el repositorio. Gracias.` },
+  { id: 's9', who: 'Q&A', from: 'fin', to: '', steps: 1, apply() {},
+    notes: 'Fuera de los 5 minutos. Solo para preguntas del profesor.' }
+];
+
+let cur = 0, step = 0, timerStart = null, timerUsed = 0, timerRun = null;
+function fitStage() {
+  const v = $('viewport'), k = Math.min(v.clientWidth / 1600, v.clientHeight / 900);
+  const s = $('stage');
+  s.style.transform = `scale(${k})`;
+  s.style.left = (v.clientWidth - 1600 * k) / 2 + 'px';
+  s.style.top = (v.clientHeight - 900 * k) / 2 + 'px';
+}
+function render(animate) {
+  const sc = scenes[cur];
+  document.querySelectorAll('.scene').forEach(e => e.classList.toggle('on', e.id === sc.id));
+  document.querySelectorAll(`#${sc.id} [data-step]`).forEach(e => e.classList.toggle('off', +e.dataset.step > step));
+  if (sc.id !== 's4') sweepOn(false);
+  if (sc.id !== 's3') clearInterval(raceFrame);
+  sc.apply(step, animate);
+  $('marker').textContent = sc.who;
+  $('window').textContent = sc.to ? `${sc.from} a ${sc.to}` : '';
+  $('bl').textContent = `IM ${cur + 1}/${scenes.length}   SE ${step + 1}/${sc.steps}`;
+  $('notes').textContent = sc.notes;
+}
+function clockText() {
+  const used = timerUsed + (timerStart ? (performance.now() - timerStart) / 1000 : 0);
+  const left = Math.max(0, 300 - used);
+  const c = $('clock');
+  c.textContent = `${String(Math.floor(left / 60)).padStart(2, '0')}:${String(Math.floor(left % 60)).padStart(2, '0')}`;
+  c.classList.toggle('low', left <= 30);
+}
+function clockToggle() {
+  if (timerStart) { timerUsed += (performance.now() - timerStart) / 1000; timerStart = null; clearInterval(timerRun); }
+  else { timerStart = performance.now(); timerRun = setInterval(clockText, 250); }
+  clockText();
+}
+function clockReset() { clearInterval(timerRun); timerStart = null; timerUsed = 0; clockText(); }
+function next() {
+  if (!timerStart && !timerUsed) clockToggle();
+  if (step < scenes[cur].steps - 1) step++;
+  else if (cur < scenes.length - 1) { cur++; step = 0; }
+  else return;
+  render(true);
+}
+function prev() {
+  if (step > 0) step--;
+  else if (cur > 0) { cur--; step = scenes[cur].steps - 1; }
+  else return;
+  render(false);
+}
+function toggleNotes() { $('notes').hidden = !$('notes').hidden; }
+function toggleFull() { const r = document.documentElement; try { if (document.fullscreenElement) document.exitFullscreen(); else if (r.requestFullscreen) r.requestFullscreen().catch(() => {}); } catch (e) {} }
+$('bNext').addEventListener('click', next);
+$('bPrev').addEventListener('click', prev);
+$('bNotes').addEventListener('click', toggleNotes);
+$('bFull').addEventListener('click', toggleFull);
+$('bClock').addEventListener('click', clockToggle);
+document.querySelectorAll('input[type=range]').forEach(r => r.addEventListener('pointerup', () => r.blur()));
+addEventListener('keydown', e => {
+  if (e.target.tagName === 'INPUT') return;
+  const k = e.key;
+  if (k === 'ArrowRight' || k === 'PageDown' || k === ' ') { e.preventDefault(); next(); }
+  else if (k === 'ArrowLeft' || k === 'PageUp') { e.preventDefault(); prev(); }
+  else if (k === 'n' || k === 'N') toggleNotes();
+  else if (k === 'f' || k === 'F') toggleFull();
+  else if (k === 't' || k === 'T') clockToggle();
+  else if (k === 'r' || k === 'R') clockReset();
+});
+addEventListener('resize', fitStage);
+
+function printAll() {
+  document.body.classList.add('print');
+  document.querySelectorAll('[data-step]').forEach(e => e.classList.remove('off'));
+  raceAt(cpuT.total);
+  wall1.place('a', false, true); wall1.mode(true, false);
+  wall2.place('r', false, true); wall2.mode(false, true);
+  preset(895987);
+}
+if (location.hash === '#print') printAll();
+else { fitStage(); render(false); }
+</script>

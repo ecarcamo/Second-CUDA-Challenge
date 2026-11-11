@@ -97,7 +97,12 @@ def main() -> int:
     w("| Cola | CPU | GPU |\n|---|---|---|")
     for m in SHIFT_SIZES:
         w(f"| {m} radiografías | {fmt(tc * m / n, 1)} s | {fmt(tg * m / n, 1)} s |")
-    w(f"| Una radiografía nueva | {fmt(1000 * tc / n, 0)} ms | {fmt(1000 * tg / n, 1)} ms |\n")
+    latency_cpu, latency_gpu = load(RES / "latencia" / "cpu" / "tiempos.json"), load(RES / "latencia" / "gpu" / "tiempos.json")
+    if latency_cpu and latency_gpu:
+        one_cpu = 1000 * latency_cpu["mediana_s"]["total"] / latency_cpu["imagenes"]
+        one_gpu = 1000 * latency_gpu["mediana_s"]["total"] / latency_gpu["imagenes"]
+        w(f"| Una radiografía nueva (lote 1, medido) | {fmt(one_cpu, 1)} ms | {fmt(one_gpu, 1)} ms |")
+    w("")
 
     sweep = sorted(p for p in RES.glob("barrido_cpu/*/tiempos.json") if p.parent.name != "pesos_originales")
     if sweep:

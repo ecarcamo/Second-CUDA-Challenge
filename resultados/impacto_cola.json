@@ -1,0 +1,95 @@
+{
+  "imagenes_prueba": 7724,
+  "tamano_cola": 300,
+  "simulaciones": 5000,
+  "posicion_media_por_llegada": 150.5,
+  "prevalencia_critico_pct": 32.0,
+  "puntaje_maximo": {
+    "neumotorax": {
+      "casos": 758,
+      "posicion_media": 144.3,
+      "mediana": 155.0,
+      "p90": 233.0,
+      "primeras_30_pct": 7.3
+    },
+    "edema": {
+      "casos": 264,
+      "posicion_media": 89.1,
+      "mediana": 74.0,
+      "p90": 190.0,
+      "primeras_30_pct": 25.8
+    },
+    "neumonia": {
+      "casos": 166,
+      "posicion_media": 122.5,
+      "mediana": 117.0,
+      "p90": 250.0,
+      "primeras_30_pct": 15.9
+    },
+    "derrame": {
+      "casos": 1185,
+      "posicion_media": 104.3,
+      "mediana": 90.0,
+      "p90": 207.0,
+      "primeras_30_pct": 11.9
+    },
+    "consolidacion": {
+      "casos": 529,
+      "posicion_media": 103.3,
+      "mediana": 92.0,
+      "p90": 206.0,
+      "primeras_30_pct": 16.2
+    },
+    "cualquier_critico": {
+      "casos": 2471,
+      "posicion_media": 117.5,
+      "mediana": 108.0,
+      "p90": 224.0,
+      "primeras_30_pct": 12.5
+    }
+  },
+  "puntaje_por_percentil": {
+    "neumotorax": {
+      "casos": 758,
+      "posicion_media": 148.2,
+      "mediana": 152.0,
+      "p90": 243.0,
+      "primeras_30_pct": 6.7
+    },
+    "edema": {
+      "casos": 264,
+      "posicion_media": 85.9,
+      "mediana": 72.0,
+      "p90": 184.0,
+      "primeras_30_pct": 23.6
+    },
+    "neumonia": {
+      "casos": 166,
+      "posicion_media": 123.6,
+      "mediana": 120.0,
+      "p90": 250.0,
+      "primeras_30_pct": 19.2
+    },
+    "derrame": {
+      "casos": 1185,
+      "posicion_media": 110.4,
+      "mediana": 104.0,
+      "p90": 206.0,
+      "primeras_30_pct": 13.3
+    },
+    "consolidacion": {
+      "casos": 529,
+      "posicion_media": 107.2,
+      "mediana": 98.0,
+      "p90": 211.0,
+      "primeras_30_pct": 15.9
+    },
+    "cualquier_critico": {
+      "casos": 2471,
+      "posicion_media": 121.3,
+      "mediana": 115.0,
+      "p90": 230.0,
+      "primeras_30_pct": 12.5
+    }
+  }
+}
