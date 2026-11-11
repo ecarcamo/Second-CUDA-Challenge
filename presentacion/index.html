@@ -96,6 +96,12 @@ input[type=range] { width: 100%; accent-color: var(--wax); height: 30px; }
 .presets button.sel { background: var(--glow); color: var(--film); }
 .can { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; font-size: 27px; line-height: 1.24; font-weight: 500; }
 .can div { border-top: 3px solid var(--glow); padding-top: 10px; }
+.trio { display: grid; grid-template-columns: repeat(3, 1fr); gap: 34px; }
+.trio > div { border-top: 6px solid var(--c); padding-top: 14px; display: flex; flex-direction: column; gap: 12px; }
+.trio h3 { margin: 0; font-family: var(--mono); font-size: 19px; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; line-height: 1.3; }
+.trio .big { font-size: 104px; color: var(--c); }
+.trio .calc { font-size: 21px; line-height: 1.55; }
+.trio p { font-size: 21px; line-height: 1.3; color: var(--muted); }
 .refs { font-size: 19px; line-height: 1.33; columns: 2; column-gap: 44px; }
 .refs p { margin: 0 0 9px; break-inside: avoid; }
 svg text { font-family: var(--mono); fill: var(--muted); }
@@ -178,6 +184,32 @@ body.print .scene:last-of-type { break-after: auto; }
         <p class="note">La barra de arriba es solo la GPU, a su propia escala: 173,3 s.</p>
       </div>
     </div>
+  </section>
+
+  <section class="scene" id="s3b" style="gap:28px">
+    <h2>¿8,3× o 7,3×?</h2>
+    <p class="lead">La GPU no decodifica: en las dos versiones lo hace la CPU. Lo que cambia es cuántos hilos de CPU quedan libres para hacerlo.</p>
+    <div class="trio">
+      <div style="--c:var(--gpu)">
+        <h3>Medido · cada versión en su mejor configuración</h3>
+        <div class="big">8,3×</div>
+        <div class="calc">S = T<sub>CPU</sub> / T<sub>GPU</sub><br>&nbsp;&nbsp;= 1 445,8 s / 173,3 s<br>&nbsp;&nbsp;= 8,3×</div>
+        <p>CPU: la red usa los núcleos y decodifica con 8 hilos, 53,5 s. GPU: la red se va a la tarjeta y la CPU decodifica con 32 hilos, 27,6 s.</p>
+      </div>
+      <div style="--c:var(--glow)" data-step="1">
+        <h3>Teórico · Ley de Amdahl</h3>
+        <div class="big">7,1×</div>
+        <div class="calc">s = (19,1 + 53,5) / 1 445,8 = 0,050<br>k = 1 293,7 / 122,8 = 10,5<br>S = 1 / (s + (1 − s) / k)<br>&nbsp;&nbsp;= 1 / (0,050 + 0,950 / 10,5)<br>&nbsp;&nbsp;= 1 / 0,140 = 7,1×</div>
+        <p>s: lectura y decodificación, lo que no acelera la GPU. k: cuánto se acelera la inferencia. Supone que la parte de CPU no cambia.</p>
+      </div>
+      <div style="--c:var(--cpu)" data-step="2">
+        <h3>Medido · los mismos 8 hilos en las dos</h3>
+        <div class="big">7,3×</div>
+        <div class="calc">S = T<sub>CPU</sub> / T<sub>GPU, 8 hilos</sub><br>&nbsp;&nbsp;= 1 445,8 s / 198,4 s<br>&nbsp;&nbsp;= 7,3×</div>
+        <p>Decodificar vuelve a tardar 53,6 s, igual que en la CPU. Lo medido coincide con Amdahl.</p>
+      </div>
+    </div>
+    <p class="lead" data-step="2" style="font-size:27px">Con 32 hilos, la versión GPU tarda 25 s menos (198,4 s → 173,3 s). Esos 25 s los gana la CPU al quedar libre de la red, no la GPU.</p>
   </section>
 
   <section class="scene" id="s4">
@@ -523,17 +555,19 @@ $('nRange').addEventListener('input', e => setN(nFrom(+e.target.value)));
 function preset(n) { $('nRange').value = vFrom(n); setN(n); }
 
 const scenes = [
-  { id: 's1', who: 'DL', from: '0:00', to: '0:35', steps: 2, apply(s) { wall1.place('a', false, s >= 1); wall1.mode(s >= 1, false); },
-    notes: `Son las once de la noche en una emergencia del IGSS. En esta pantalla hay 300 radiografías reales y un solo radiólogo, que las abre por orden de llegada. [→] Esta es ${heroName}, ${hero.age} años, con edema pulmonar: se le está llenando de líquido el pulmón. Su placa está en la posición ${hero.arrival}. Si el radiólogo tarda tres minutos por placa, la abre dentro de ${hm(waitArrival)}. Nadie en esa sala sabe que la suya es urgente.` },
-  { id: 's2', who: 'DL', from: '0:35', to: '1:05', steps: 2, apply() {},
+  { id: 's1', who: 'DL', from: '0:00', to: '0:30', steps: 2, apply(s) { wall1.place('a', false, s >= 1); wall1.mode(s >= 1, false); },
+    notes: `Once de la noche, emergencia del IGSS. En esta pantalla hay 300 radiografías reales y un solo radiólogo, que las abre por orden de llegada. [→] Esta es ${heroName}, ${hero.age} años, con edema pulmonar: se le está llenando de líquido el pulmón. Su placa está en la posición ${hero.arrival}. Si el radiólogo tarda tres minutos por placa, la abre dentro de ${hm(waitArrival)}. Nadie en esa sala sabe que la suya es urgente.` },
+  { id: 's2', who: 'DL', from: '0:30', to: '1:00', steps: 2, apply() {},
     notes: 'Esto no es un caso raro. El IGSS hizo 895 987 estudios de rayos X en 2024, unos 2 455 al día. [→] Para resolverlo usamos datos reales: 44 999 radiografías del NIH, 17,7 gigas, de más de 11 mil pacientes. Verificamos cada imagen: ninguna ilegible, y 421 venían con canal alfa y se convirtieron a gris sin perder nada.' },
-  { id: 's3', who: 'NC', from: '1:05', to: '1:45', steps: 3, apply(s, animate) { if (s === 0) race(false); else if (s === 1 && animate) race(true); else { clearInterval(raceFrame); raceAt(cpuT.total); } },
-    notes: 'Cada placa sigue el mismo camino: se lee, se decodifica, se reduce a 224 por 224 y una red DenseNet-121 le da un puntaje de urgencia. Hicimos exactamente lo mismo dos veces, con el mismo modelo, los mismos datos y la misma precisión. [→ corre la carrera] Aquí van, con el tiempo comprimido. La CPU, en su mejor configuración, tarda 24 minutos. La GPU, 2 minutos 53 segundos. [→] 8,3 veces más rápido. Y copiar los datos a la GPU tomó apenas 3,96 segundos, el 2,3 por ciento.' },
-  { id: 's4', who: 'EC', from: '1:45', to: '2:25', steps: 2, apply() { sweepOn(true); if (pixels) drawThread(...sweep[sweepIndex]); },
+  { id: 's3', who: 'NC', from: '1:00', to: '1:35', steps: 3, apply(s, animate) { if (s === 0) race(false); else if (s === 1 && animate) race(true); else { clearInterval(raceFrame); raceAt(cpuT.total); } },
+    notes: 'Cada placa sigue el mismo camino: se lee, se decodifica, se reduce a 224 por 224 y una red DenseNet-121 le da un puntaje de urgencia. Hicimos lo mismo dos veces, con el mismo modelo, los mismos datos y la misma precisión. [→ corre la carrera] La CPU, en su mejor configuración, tarda 24 minutos. La GPU, 2 minutos 53 segundos. [→] 8,3 veces más rápido. Y copiar los datos a la GPU tomó apenas 3,96 segundos, el 2,3 por ciento.' },
+  { id: 's3b', who: 'EC', from: '1:35', to: '2:10', steps: 3, apply() {},
+    notes: 'Ojo con ese 8,3. La GPU no decodifica: eso lo hace la CPU en las dos versiones. En la versión GPU la CPU queda libre y decodifica con 32 hilos. [→] Si la parte de CPU no cambiara, Amdahl predice 7,1: un 5 por ciento fijo y el resto 10,5 veces más rápido. [→] Y con los mismos 8 hilos medimos 7,3. La teoría se cumple; el salto a 8,3 lo da la CPU al quedar libre.' },
+  { id: 's4', who: 'EC', from: '2:10', to: '2:45', steps: 2, apply() { sweepOn(true); if (pixels) drawThread(...sweep[sweepIndex]); },
     notes: 'Esto corre en vivo sobre la placa real. Cada hilo de nuestro kernel calcula un solo píxel de salida: promedia su cajita de 5 por 5 o 6 por 6 píxeles y la normaliza. Son 50 176 hilos por placa, más de 3 millones por lote. [→] El preprocesado pasó de 79 segundos a 0,36. Y como enviamos un byte por píxel en vez de cuatro, la copia bajó de 15 a 4 segundos.' },
-  { id: 's5', who: 'EC', from: '2:25', to: '3:05', steps: 2, apply() {},
-    notes: '¿Por qué no es 200 veces más rápido? Por la Ley de Amdahl. Leer y decodificar se queda en la CPU: es el 5 por ciento. [mover el control a la derecha] Aunque la GPU hiciera lo demás en tiempo cero, el techo es 19,9. Con la inferencia a 10,5 veces, Amdahl predice 7,1, y con los mismos hilos medimos 7,3. [→] El cuello de botella se movió: esa parte pasó de 5 a 27 por ciento. Solapando decodificación y GPU llegamos a 10,3.' },
-  { id: 's6', who: 'NC', from: '3:05', to: '3:45', steps: 3, apply(s, animate) { wall2.place(s >= 1 ? 'r' : 'a', animate && s === 1, true); wall2.mode(s < 2, s >= 2); },
+  { id: 's5', who: 'EC', from: '2:45', to: '3:10', steps: 2, apply() {},
+    notes: '¿Y por qué no 200 veces? Leer y decodificar se queda en la CPU: es el 5 por ciento. [mover el control a la derecha] Aunque la GPU hiciera lo demás en tiempo cero, el techo es 19,9. [→] El cuello de botella se movió: esa parte pasó de 5 a 27 por ciento. Solapando CPU y GPU llegamos a 10,3.' },
+  { id: 's6', who: 'NC', from: '3:10', to: '3:45', steps: 3, apply(s, animate) { wall2.place(s >= 1 ? 'r' : 'a', animate && s === 1, true); wall2.mode(s < 2, s >= 2); },
     notes: `Ahora el momento importante. [→ se ordena la cola] ${heroName} pasa de la ${hero.arrival} a la ${hero.rank}: unas siete horas antes. [→] Pero seamos honestos. En 5 000 colas simuladas, el edema mejora bastante: la posición media baja de 150 a 89. El neumotórax casi no se mueve: 144. Por eso el sistema prioriza y no diagnostica. El radiólogo sigue leyendo todas las placas.` },
   { id: 's7', who: 'DL', from: '3:45', to: '4:30', steps: 3, apply(s) { preset(s === 0 ? 197 : 895987); },
     notes: '¿Y la GPU para qué, si un hospital ordena su día en 6 segundos con CPU? Para un solo hospital, no hace falta. [→] Cambia cuando crece la escala. Un año de rayos X de todo el IGSS: 8 horas en CPU, un turno entero; menos de una hora en GPU. [→] Ahora se puede volver a puntuar todo el archivo cada vez que mejore el modelo, recuperar un atraso en minutos y usar modelos ocho veces más pesados en el mismo tiempo, que es justo lo que necesita la precisión.' },
